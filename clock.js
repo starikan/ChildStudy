@@ -174,10 +174,13 @@ function generateClocks() {
     const row = document.createElement('tr');
     for (let j = 0; j < gridCols; j++) {
       const cell = document.createElement('td');
+
       // Определяем zoom для ячеек
       cell.style.zoom = getCellZoom(gridCols, gridRows);
+
       // Клонируем SVG из preload
       const svg = svgTemplate.cloneNode(true);
+
       // Управление стрелками через отдельную функцию
       if (showAnalog && times[i + j]) {
         const [h, m] = times[i + j].split(':').map(Number);
@@ -185,6 +188,7 @@ function generateClocks() {
       } else {
         setClockHands(svg, 0, 0, false);
       }
+
       // Скрытие/отображение 24ч цифр
       const tfGroup = svg.querySelector('.twentyfour-group');
       if (tfGroup) tfGroup.style.display = twentyFourClock ? '' : 'none';
@@ -215,11 +219,13 @@ function generateClocks() {
         input.disabled = false; // enable input if digital time is hidden
       }
       input.placeholder = placeholder;
+
       // Маска времени и визуальная проверка
       input.addEventListener('input', function (e) {
         maskTimeInput(this, ampmMode);
         updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode);
       });
+
       input.addEventListener('keydown', function (e) {
         // Разрешаем только цифры, Backspace, Delete, стрелки, Tab
         if (
@@ -348,7 +354,21 @@ function maskTimeInput(input, ampmMode) {
   input._lastLength = input.value.length;
 }
 
-// --- ВНЕ generateClocks ---
+function updateReloadIcon(svg, isCorrect) {
+  const { gridCols, gridRows } = loadSettings();
+  const reloadIcon = svg.querySelector('#svg-reload');
+  reloadIcon.style.display = 'none';
+  svg.style.cursor = '';
+  svg.onclick = null;
+  if (isCorrect && gridCols === 1 && gridRows === 1) {
+    reloadIcon.style.display = '';
+    svg.style.cursor = 'pointer';
+    svg.onclick = function () {
+      generateClocks();
+    };
+  }
+}
+
 function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
   const svgCheckmark = svg.querySelector('#svg-checkmark');
   const svgCross = svg.querySelector('#svg-cross');
@@ -367,6 +387,10 @@ function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
     if (val.length === 8) val = val.replace(/\s+/g, ' ').toUpperCase();
     correct = correct.toUpperCase();
   }
+
+  // --- reload icon logic ---
+  updateReloadIcon(svg, val.length === correct.length && val === correct);
+
   if (val.length === correct.length) {
     if (val === correct) {
       svgCheckmark.style.display = '';
