@@ -17,7 +17,7 @@
       .header-row {
         width: 100%;
         display: grid;
-        grid-template-columns: 1fr auto auto;
+        grid-template-columns: 1fr auto auto auto;
         align-items: center;
         margin-bottom: 20px;
         gap: 0 8px;
@@ -27,7 +27,7 @@
         margin: 0;
         grid-column: 1 / 2;
       }
-      #settingsBtn, #printBtn {
+      #settingsBtn, #printBtn, #regenBtn {
         justify-self: end;
         margin: 0;
         display: inline-block;
@@ -119,6 +119,7 @@
       <h1>Учимся определять время по часам</h1>
       <button id="settingsBtn" title="Настройки" aria-label="Настройки">⚙️</button>
       <button id="printBtn" title="Печать" aria-label="Печать">🖨️</button>
+      <button id="regenBtn" title="Перегенерировать задания" aria-label="Перегенерировать" style="font-size:28px; background:none; border:none; cursor:pointer;">🔄</button>
     </div>
     <table id="clock-table"></table>
 
@@ -307,6 +308,7 @@
 
       document.getElementById('settingsBtn').onclick = openModal;
       document.getElementById('printBtn').onclick = function() { window.print(); };
+      document.getElementById('regenBtn').onclick = function() { generateClocks(); };
 
       function loadSettings() {
         const defaults = {
