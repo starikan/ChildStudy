@@ -178,6 +178,14 @@
           <input type="checkbox" id="showDayNightIcons" checked />
           Показывать иконки дня/ночи
         </label>
+        <label>
+          Столбцов:
+          <input type="number" id="gridCols" min="1" max="5" value="3" style="width:60px;" />
+        </label>
+        <label>
+          Строк:
+          <input type="number" id="gridRows" min="1" max="5" value="4" style="width:60px;" />
+        </label>
         <button onclick="closeModal()">Закрыть</button>
       </div>
     </div>
@@ -205,6 +213,8 @@
           twentyFourClock: false,
           ampmMode: false,
           showDayNightIcons: true,
+          gridCols: 3,
+          gridRows: 4,
         };
         const saved = JSON.parse(sessionStorage.getItem('clockSettings')) || defaults;
         document.getElementById('startTime').value = saved.start;
@@ -219,6 +229,10 @@
           document.getElementById('ampmMode').checked = saved.ampmMode === true;
         if (document.getElementById('showDayNightIcons'))
           document.getElementById('showDayNightIcons').checked = saved.showDayNightIcons !== false;
+        if (document.getElementById('gridCols'))
+          document.getElementById('gridCols').value = saved.gridCols || 3;
+        if (document.getElementById('gridRows'))
+          document.getElementById('gridRows').value = saved.gridRows || 4;
         return saved;
       }
 
@@ -233,13 +247,13 @@
       }
 
       function generateClocks() {
-        const { start, end, step, showDigital, twentyFourClock, ampmMode, showDayNightIcons } = loadSettings();
+        const { start, end, step, showDigital, twentyFourClock, ampmMode, showDayNightIcons, gridCols = 3, gridRows = 4 } = loadSettings();
         const showAnalog = document.getElementById('showAnalog') ? document.getElementById('showAnalog').checked : true;
         const startMinutes = toMinutes(start);
         const endMinutes = toMinutes(end);
         const stepVal = step === 'random' ? 1 : parseInt(step); // 1 минута для random
         let times = [];
-        const count = 12;
+        const count = gridCols * gridRows;
         const maxAttempts = 1000;
         let attempts = 0;
         const uniqueTimes = new Set();
@@ -293,9 +307,9 @@
         table.innerHTML = '';
         // Получаем SVG-шаблон из preload
         const svgTemplate = document.getElementById('svg-template-preload').firstElementChild;
-        for (let i = 0; i < times.length; i += 3) {
+        for (let i = 0; i < times.length; i += gridCols) {
           const row = document.createElement('tr');
-          for (let j = 0; j < 3; j++) {
+          for (let j = 0; j < gridCols; j++) {
             const cell = document.createElement('td');
             // Клонируем SVG из preload
             const svg = svgTemplate.cloneNode(true);
@@ -417,6 +431,8 @@
           twentyFourClock: document.getElementById('twentyFourClock').checked,
           ampmMode: document.getElementById('ampmMode').checked,
           showDayNightIcons: document.getElementById('showDayNightIcons').checked,
+          gridCols: parseInt(document.getElementById('gridCols').value) || 3,
+          gridRows: parseInt(document.getElementById('gridRows').value) || 4,
         };
         sessionStorage.setItem('clockSettings', JSON.stringify(settings));
         generateClocks(); // не закрываем модалку
@@ -426,7 +442,8 @@
       function setupLiveSettings() {
         const ids = [
           'startTime', 'endTime', 'step',
-          'showDigital', 'showAnalog', 'twentyFourClock', 'ampmMode', 'showDayNightIcons'
+          'showDigital', 'showAnalog', 'twentyFourClock', 'ampmMode', 'showDayNightIcons',
+          'gridCols', 'gridRows'
         ];
         ids.forEach(id => {
           const el = document.getElementById(id);
