@@ -167,10 +167,17 @@ function generateClocks() {
   table.innerHTML = '';
   // Получаем SVG-шаблон из preload
   const svgTemplate = document.getElementById('svg-template-preload').firstElementChild;
+
+  // Определяем zoom для ячеек
+  let cellZoom = 1;
+  if (gridCols === 1 && gridRows === 1) cellZoom = 3;
+  else if (gridCols === 2 && gridRows === 2) cellZoom = 1.5;
+
   for (let i = 0; i < times.length; i += gridCols) {
     const row = document.createElement('tr');
     for (let j = 0; j < gridCols; j++) {
       const cell = document.createElement('td');
+      if (cellZoom !== 1) cell.style.zoom = cellZoom;
       // Клонируем SVG из preload
       const svg = svgTemplate.cloneNode(true);
       // Управление стрелками через отдельную функцию
