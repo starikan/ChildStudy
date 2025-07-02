@@ -85,6 +85,8 @@ function loadSettings() {
     document.getElementById('showDayNightIcons').checked = saved.showDayNightIcons !== false;
   if (document.getElementById('gridCols')) document.getElementById('gridCols').value = saved.gridCols || 3;
   if (document.getElementById('gridRows')) document.getElementById('gridRows').value = saved.gridRows || 4;
+
+  saved.zoom = getCellZoom();
   return saved;
 }
 
@@ -370,6 +372,8 @@ function updateReloadIcon(svg, isCorrect) {
 }
 
 function updateCheckmark(svg, isCorrect, isFilled) {
+  const { zoom } = loadSettings();
+
   // Сброс фона
   if (svg.parentElement) {
     svg.parentElement.style.background = '';
@@ -384,7 +388,7 @@ function updateCheckmark(svg, isCorrect, isFilled) {
     const w = Math.round(rect.width);
     const h = Math.round(rect.height);
     if (svg.parentElement) {
-      svg.parentElement.style.backgroundSize = w + 'px ' + h + 'px';
+      svg.parentElement.style.backgroundSize = w / zoom + 'px ' + h / zoom + 'px';
       svg.parentElement.style.backgroundPosition = 'top';
       svg.parentElement.style.backgroundRepeat = 'no-repeat';
     }
