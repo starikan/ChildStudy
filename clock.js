@@ -2,7 +2,6 @@
 window.onload = function () {
   sessionStorage.removeItem('clockSettings');
   setupLiveSettings();
-  setupGridAutoSwitch();
   loadSvgTemplate(generateClocks);
 };
 
@@ -324,28 +323,6 @@ function setupLiveSettings() {
       el.oninput = el.onchange = function () {
         saveSettings();
       };
-    }
-  });
-}
-
-// При изменении размера окна автоматически обновлять сетку, если не было ручного изменения
-let gridTouched = false;
-function setupGridAutoSwitch() {
-  const gridCols = document.getElementById('gridCols');
-  const gridRows = document.getElementById('gridRows');
-  if (!gridCols || !gridRows) return;
-  gridCols.addEventListener('input', () => {
-    gridTouched = true;
-  });
-  gridRows.addEventListener('input', () => {
-    gridTouched = true;
-  });
-  window.addEventListener('resize', () => {
-    if (!gridTouched) {
-      const deviceGrid = getDefaultGridByDevice();
-      gridCols.value = deviceGrid.gridCols;
-      gridRows.value = deviceGrid.gridRows;
-      saveSettings();
     }
   });
 }
