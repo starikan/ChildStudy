@@ -195,7 +195,6 @@
           <input type="checkbox" id="ampmMode" />
           12-часовой формат (AM/PM)
         </label>
-        <button onclick="saveSettings()">Сохранить</button>
         <button onclick="closeModal()">Закрыть</button>
       </div>
     </div>
@@ -211,21 +210,6 @@
 
       document.getElementById('settingsBtn').onclick = openModal;
       document.getElementById('printBtn').onclick = function() { window.print(); };
-
-      function saveSettings() {
-        const settings = {
-          start: document.getElementById('startTime').value || '00:00',
-          end: document.getElementById('endTime').value || '23:59',
-          step: document.getElementById('step').value,
-          showDigital: document.getElementById('showDigital').checked,
-          showAnalog: document.getElementById('showAnalog').checked,
-          twentyFourClock: document.getElementById('twentyFourClock').checked,
-          ampmMode: document.getElementById('ampmMode').checked,
-        };
-        sessionStorage.setItem('clockSettings', JSON.stringify(settings));
-        closeModal();
-        generateClocks();
-      }
 
       function loadSettings() {
         const defaults = {
@@ -395,9 +379,38 @@
         return `${h}:${m}`;
       }
 
+      function saveSettings() {
+        const settings = {
+          start: document.getElementById('startTime').value || '00:00',
+          end: document.getElementById('endTime').value || '23:59',
+          step: document.getElementById('step').value,
+          showDigital: document.getElementById('showDigital').checked,
+          showAnalog: document.getElementById('showAnalog').checked,
+          twentyFourClock: document.getElementById('twentyFourClock').checked,
+          ampmMode: document.getElementById('ampmMode').checked,
+        };
+        sessionStorage.setItem('clockSettings', JSON.stringify(settings));
+        generateClocks(); // не закрываем модалку
+      }
+
+      // LIVE MODE: применяем настройки сразу при изменении
+      function setupLiveSettings() {
+        const ids = [
+          'startTime', 'endTime', 'step',
+          'showDigital', 'showAnalog', 'twentyFourClock', 'ampmMode'
+        ];
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.oninput = el.onchange = function() { saveSettings(); };
+          }
+        });
+      }
+
       // Очищаем sessionStorage при загрузке страницы
       window.onload = function() {
         sessionStorage.removeItem('clockSettings');
+        setupLiveSettings();
         generateClocks();
       };
     </script>
