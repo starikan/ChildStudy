@@ -74,8 +74,7 @@ function loadSettings() {
   document.getElementById('endTime').value = saved.end;
   document.getElementById('step').value = saved.step;
   document.getElementById('showDigital').checked = saved.showDigital;
-  if (document.getElementById('showAnalog'))
-    document.getElementById('showAnalog').checked = saved.showAnalog !== false;
+  if (document.getElementById('showAnalog')) document.getElementById('showAnalog').checked = saved.showAnalog !== false;
   if (document.getElementById('twentyFourClock'))
     document.getElementById('twentyFourClock').checked = saved.twentyFourClock === true;
   if (document.getElementById('ampmMode')) document.getElementById('ampmMode').checked = saved.ampmMode === true;
@@ -168,16 +167,12 @@ function generateClocks() {
   // Получаем SVG-шаблон из preload
   const svgTemplate = document.getElementById('svg-template-preload').firstElementChild;
 
-  // Определяем zoom для ячеек
-  let cellZoom = 1;
-  if (gridCols === 1 && gridRows === 1) cellZoom = 3;
-  else if (gridCols === 2 && gridRows === 2) cellZoom = 1.5;
-
   for (let i = 0; i < times.length; i += gridCols) {
     const row = document.createElement('tr');
     for (let j = 0; j < gridCols; j++) {
       const cell = document.createElement('td');
-      if (cellZoom !== 1) cell.style.zoom = cellZoom;
+      // Определяем zoom для ячеек
+      cell.style.zoom = getCellZoom(gridCols, gridRows);
       // Клонируем SVG из preload
       const svg = svgTemplate.cloneNode(true);
       // Управление стрелками через отдельную функцию
@@ -422,4 +417,10 @@ function setDayNightIcons(svg, time, showDayNightIcons, ampmMode, showDigital) {
       if (svgMoon) svgMoon.style.display = '';
     }
   }
+}
+
+function getCellZoom(gridCols, gridRows) {
+  if (gridCols === 1 && gridRows === 1) return 3;
+  if (gridCols === 2 && gridRows === 2) return 1.5;
+  return 1;
 }
