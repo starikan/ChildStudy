@@ -379,7 +379,6 @@ function updateReloadIcon(svg, isCorrect) {
 }
 
 function updateCheckmark(svg, isCorrect, isFilled) {
-  const { zoom } = loadSettings();
   const svgWrapper =
     svg.parentElement && svg.parentElement.classList.contains('svg-bg-wrapper') ? svg.parentElement : null;
   // Сброс фона
@@ -390,10 +389,7 @@ function updateCheckmark(svg, isCorrect, isFilled) {
   svgWrapper.style.backgroundRepeat = '';
   if (isFilled) {
     const rect = svg.getBoundingClientRect();
-    const w = Math.round(rect.width);
-    const h = Math.round(rect.height);
-    svgWrapper.style.backgroundSize = w / zoom + 'px ' + h / zoom + 'px';
-    svgWrapper.style.backgroundPosition = 'top';
+    svgWrapper.style.backgroundPosition = 'center';
     svgWrapper.style.backgroundRepeat = 'no-repeat';
     if (isCorrect) {
       svgWrapper.style.backgroundImage = "url('good_monkey.gif')";
