@@ -425,8 +425,32 @@
               } else {
                 placeholder = times[i + j];
               }
+              input.disabled = true; // disable input if digital time is shown
+            } else {
+              input.disabled = false; // enable input if digital time is hidden
             }
             input.placeholder = placeholder;
+            // Маска времени
+            input.addEventListener('input', function(e) {
+              maskTimeInput(this, ampmMode);
+            });
+            input.addEventListener('keydown', function(e) {
+              // Разрешаем только цифры, Backspace, Delete, стрелки, Tab
+              if (
+                !(
+                  (e.key >= '0' && e.key <= '9') ||
+                  e.key === 'Backspace' ||
+                  e.key === 'Delete' ||
+                  e.key === 'ArrowLeft' ||
+                  e.key === 'ArrowRight' ||
+                  e.key === 'Tab' ||
+                  e.key === 'Home' ||
+                  e.key === 'End'
+                )
+              ) {
+                e.preventDefault();
+              }
+            });
             cell.appendChild(input);
             row.appendChild(cell);
           }
@@ -479,6 +503,25 @@
         setupLiveSettings();
         generateClocks();
       };
+
+      // Маска для поля времени: только цифры, авто-двоеточие, максимум 5 символов (или 8 с AM/PM)
+      function maskTimeInput(input, ampmMode) {
+        let v = input.value.replace(/[^0-9]/g, '');
+        if (v.length > 4) v = v.slice(0, 4);
+        let out = '';
+        if (v.length > 0) out += v.slice(0, 2);
+        if (v.length > 2) out += ':' + v.slice(2, 4);
+        else if (v.length > 2) out += ':';
+        input.value = out;
+        // Если AM/PM режим, разрешаем ввести пробел и AM/PM
+        if (ampmMode && input.value.length === 5 && input._lastLength !== 6) {
+          input.value += ' ';
+        }
+        // Ограничение длины
+        if (ampmMode && input.value.length > 8) input.value = input.value.slice(0, 8);
+        if (!ampmMode && input.value.length > 5) input.value = input.value.slice(0, 5);
+        input._lastLength = input.value.length;
+      }
     </script>
   </body>
 </html>
