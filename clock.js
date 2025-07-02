@@ -387,10 +387,12 @@ function updateCheckmark(svg, isCorrect, isFilled) {
   svgWrapper.style.backgroundSize = '';
   svgWrapper.style.backgroundPosition = '';
   svgWrapper.style.backgroundRepeat = '';
+  updateSVGColor(svg, 'black');
   if (isFilled) {
-    const rect = svg.getBoundingClientRect();
     svgWrapper.style.backgroundPosition = 'center';
     svgWrapper.style.backgroundRepeat = 'no-repeat';
+    // После смены фона обновляем цвет SVG для контрастности
+    updateSVGColor(svg);
     if (isCorrect) {
       svgWrapper.style.backgroundImage = "url('good_monkey.gif')";
     } else {
@@ -441,4 +443,48 @@ function getCellZoom(gridCols, gridRows) {
   if (gridCols === 1 && gridRows === 1) return 3;
   if (gridCols === 2 && gridRows === 2) return 1.5;
   return 1;
+}
+
+// --- Контрастность SVG относительно фона ---
+function getContrastYIQ(hexcolor) {
+  hexcolor = hexcolor.replace("#", "");
+  const r = parseInt(hexcolor.substr(0,2),16);
+  const g = parseInt(hexcolor.substr(2,2),16);
+  const b = parseInt(hexcolor.substr(4,2),16);
+  const yiq = ((r*299)+(g*587)+(b*114))/1000;
+  return (yiq >= 128) ? 'black' : 'white';
+}
+
+function rgbToHex(rgb) {
+  // rgb: "rgb(255, 255, 255)" или "rgba(255,255,255,1)"
+  const result = rgb.match(/\d+/g);
+  if (!result) return '#ffffff';
+  return (
+    "#" + result.slice(0, 3).map(x => {
+      const hexPart = parseInt(x).toString(16);
+      return hexPart.length === 1 ? "0" + hexPart : hexPart;
+    }).join("")
+  );
+}
+
+function updateSVGColor(svgElement, color) {
+  // Находим враппер
+  const wrapper = svgElement.closest('.svg-bg-wrapper');
+  let bgColor = window.getComputedStyle(wrapper).backgroundColor;
+  let hex = rgbToHex(bgColor);
+  const contrastColor = color ?? getContrastYIQ(hex);
+
+  // Меняем цвет стрелок, цифр, иконок
+  // Стрелки
+  const hourHand = svgElement.querySelector('#clock-hour-hand');
+  const minHand = svgElement.querySelector('#clock-minute-hand');
+  if (hourHand) hourHand.setAttribute('fill', contrastColor);
+  if (minHand) minHand.setAttribute('fill', contrastColor);
+  if (hourHand) hourHand.setAttribute('stroke', contrastColor);
+  if (minHand) minHand.setAttribute('stroke', contrastColor);
+  // Цифры
+  svgElement.querySelectorAll('text, .clock-number').forEach(el => {
+    el.setAttribute('fill', contrastColor);
+  });
+
 }
