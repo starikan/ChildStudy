@@ -176,12 +176,20 @@ function generateClocks() {
     const row = document.createElement('tr');
     for (let j = 0; j < gridCols; j++) {
       const cell = document.createElement('td');
-
-      // Определяем zoom для ячеек
       cell.style.zoom = getCellZoom(gridCols, gridRows);
 
       // Клонируем SVG из preload
       const svg = svgTemplate.cloneNode(true);
+
+      // Создаём врапер для svg
+      const svgWrapper = document.createElement('div');
+      svgWrapper.className = 'svg-bg-wrapper';
+      svgWrapper.style.display = 'inline-block';
+      svgWrapper.style.position = 'relative';
+      svgWrapper.style.width = svg.getAttribute('width') ? svg.getAttribute('width') + 'px' : '';
+      svgWrapper.style.height = svg.getAttribute('height') ? svg.getAttribute('height') + 'px' : '';
+      svgWrapper.appendChild(svg);
+      cell.appendChild(svgWrapper);
 
       // Управление стрелками через отдельную функцию
       if (showAnalog && times[i + j]) {
@@ -198,7 +206,6 @@ function generateClocks() {
       // --- Day/Night icons logic ---
       setDayNightIcons(svg, times[i + j], showDayNightIcons, ampmMode, showDigital);
 
-      cell.appendChild(svg);
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'time-label time-label-input';
@@ -372,30 +379,24 @@ function updateReloadIcon(svg, isCorrect) {
 }
 
 function updateCheckmark(svg, isCorrect, isFilled) {
-  const { zoom } = loadSettings();
-
+  const svgWrapper = svg.parentElement && svg.parentElement.classList.contains('svg-bg-wrapper') ? svg.parentElement : null;
   // Сброс фона
-  if (svg.parentElement) {
-    svg.parentElement.style.background = '';
-    svg.parentElement.style.backgroundImage = '';
-    svg.parentElement.style.backgroundSize = '';
-    svg.parentElement.style.backgroundPosition = '';
-    svg.parentElement.style.backgroundRepeat = '';
-  }
-
+  svgWrapper.style.background = '';
+  svgWrapper.style.backgroundImage = '';
+  svgWrapper.style.backgroundSize = '';
+  svgWrapper.style.backgroundPosition = '';
+  svgWrapper.style.backgroundRepeat = '';
   if (isFilled) {
     const rect = svg.getBoundingClientRect();
     const w = Math.round(rect.width);
     const h = Math.round(rect.height);
-    if (svg.parentElement) {
-      svg.parentElement.style.backgroundSize = w / zoom + 'px ' + h / zoom + 'px';
-      svg.parentElement.style.backgroundPosition = 'top';
-      svg.parentElement.style.backgroundRepeat = 'no-repeat';
-    }
+    svgWrapper.style.backgroundSize = w + 'px ' + h + 'px';
+    svgWrapper.style.backgroundPosition = 'top';
+    svgWrapper.style.backgroundRepeat = 'no-repeat';
     if (isCorrect) {
-      svg.parentElement.style.backgroundImage = "url('good_monkey.gif')";
+      svgWrapper.style.backgroundImage = "url('good_monkey.gif')";
     } else {
-      svg.parentElement.style.backgroundImage = "url('bad_monkey.png')";
+      svgWrapper.style.backgroundImage = "url('bad_monkey.png')";
     }
   }
 }
