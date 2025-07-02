@@ -438,9 +438,12 @@
             const svgMoon = svg.querySelector('#svg-moon');
             if (svgSun) svgSun.style.display = 'none';
             if (svgMoon) svgMoon.style.display = 'none';
-            if (showDayNightIcons && times[i + j]) {
+            if (
+              showDayNightIcons &&
+              times[i + j] &&
+              (ampmMode || !showDigital)
+            ) {
               const [h, m] = times[i + j].split(':').map(Number);
-              // Первая половина дня (0:00–11:59) — солнце, вторая (12:00–23:59) — луна
               if (h < 12) {
                 if (svgSun) svgSun.style.display = '';
               } else {
