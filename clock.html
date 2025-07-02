@@ -221,6 +221,9 @@
           <text x="100" y="35" transform="rotate(330,100,100)">23</text>
         </g>
         <circle cx="100" cy="100" r="3" fill="black" />
+        <!-- Часовая и минутная стрелки (по умолчанию скрыты) -->
+        <line id="clock-hour-hand" x1="100" y1="100" x2="100" y2="100" stroke="black" stroke-width="5" stroke-linecap="round" style="display:none" />
+        <line id="clock-minute-hand" x1="100" y1="100" x2="100" y2="100" stroke="black" stroke-width="3" stroke-linecap="round" style="display:none" />
         <!-- Галочка и крестик для проверки (правый верхний угол) -->
         <g id="svg-checkmark" style="display:none">
           <path d="M160 35 l10 15 l20 -25" stroke="green" stroke-width="5" fill="none"/>
@@ -399,35 +402,32 @@
             const cell = document.createElement('td');
             const svgFragment = template.content.cloneNode(true);
             const svg = svgFragment.querySelector('svg');
+            // Управление стрелками через SVG-элементы
+            const hourHand = svg.querySelector('#clock-hour-hand');
+            const minHand = svg.querySelector('#clock-minute-hand');
             if (showAnalog && times[i + j]) {
-              // draw hands
               const [h, m] = times[i + j].split(':').map(Number);
               // hour hand
               const hourAngle = ((h % 12) + m / 60) * 30;
               const hourX = 100 + 40 * Math.sin((Math.PI / 180) * hourAngle);
               const hourY = 100 - 40 * Math.cos((Math.PI / 180) * hourAngle);
-              const hourHand = document.createElementNS('http://www.w3.org/2000/svg', 'line');
               hourHand.setAttribute('x1', '100');
               hourHand.setAttribute('y1', '100');
               hourHand.setAttribute('x2', hourX.toString());
               hourHand.setAttribute('y2', hourY.toString());
-              hourHand.setAttribute('stroke', 'black');
-              hourHand.setAttribute('stroke-width', '5');
-              hourHand.setAttribute('stroke-linecap', 'round');
-              svg.appendChild(hourHand);
+              hourHand.style.display = '';
               // minute hand
               const minAngle = m * 6;
               const minX = 100 + 70 * Math.sin((Math.PI / 180) * minAngle);
               const minY = 100 - 70 * Math.cos((Math.PI / 180) * minAngle);
-              const minHand = document.createElementNS('http://www.w3.org/2000/svg', 'line');
               minHand.setAttribute('x1', '100');
               minHand.setAttribute('y1', '100');
               minHand.setAttribute('x2', minX.toString());
               minHand.setAttribute('y2', minY.toString());
-              minHand.setAttribute('stroke', 'black');
-              minHand.setAttribute('stroke-width', '3');
-              minHand.setAttribute('stroke-linecap', 'round');
-              svg.appendChild(minHand);
+              minHand.style.display = '';
+            } else {
+              if (hourHand) hourHand.style.display = 'none';
+              if (minHand) minHand.style.display = 'none';
             }
             // Скрытие/отображение 24ч цифр
             const tfGroup = svg.querySelector('.twentyfour-group');
