@@ -10,6 +10,30 @@
       }
       h1 {
         text-align: center;
+        display: inline-block;
+        margin: 0 auto;
+        vertical-align: middle;
+      }
+      .header-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .header-row h1 {
+        justify-self: center;
+        margin: 0;
+      }
+      #settingsBtn {
+        justify-self: end;
+        margin: 0;
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 28px;
+        background: none;
+        border: none;
+        cursor: pointer;
       }
       table {
         width: 100%;
@@ -29,10 +53,6 @@
       svg {
         width: 150px;
         height: 150px;
-      }
-      #settingsBtn {
-        margin: 20px auto;
-        display: block;
       }
       .modal {
         display: none;
@@ -59,8 +79,10 @@
     </style>
   </head>
   <body>
-    <h1>Учимся определять время по часам</h1>
-    <button id="settingsBtn">Настройки</button>
+    <div class="header-row">
+      <h1>Учимся определять время по часам</h1>
+      <button id="settingsBtn" title="Настройки" aria-label="Настройки" style="font-size: 28px; background: none; border: none; cursor: pointer;">⚙️</button>
+    </div>
     <table id="clock-table"></table>
 
     <!-- SVG шаблон -->
