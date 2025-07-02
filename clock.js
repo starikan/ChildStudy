@@ -196,6 +196,8 @@ function generateClocks() {
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'time-label time-label-input';
+      input.setAttribute('inputmode', 'numeric');
+      input.setAttribute('pattern', '[0-9: ]*');
       let placeholder = '___:___';
       if (showDigital && times[i + j]) {
         if (ampmMode) {
