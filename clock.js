@@ -15,13 +15,16 @@ document.getElementById('regenBtn').onclick = function () {
 };
 
 function getDefaultGridByDevice() {
-  // Используем user agent и media queries для более точного определения
-  if (window.matchMedia('(max-width: 600px), (max-height: 600px)').matches) {
+  // Определяем мобильное устройство по userAgent
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  if (/android|iphone|ipad|ipod|opera mini|iemobile|mobile/i.test(ua)) {
     return { gridCols: 1, gridRows: 1 };
   }
-  if (window.matchMedia('(max-width: 900px), (max-height: 900px)').matches) {
+  // Планшеты (iPad, Android Tablet)
+  if (/ipad|tablet|playbook|silk/i.test(ua)) {
     return { gridCols: 2, gridRows: 2 };
   }
+  // Десктоп
   return { gridCols: 3, gridRows: 4 };
 }
 
