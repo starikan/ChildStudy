@@ -379,7 +379,9 @@ function updateReloadIcon(svg, isCorrect) {
 }
 
 function updateCheckmark(svg, isCorrect, isFilled) {
-  const svgWrapper = svg.parentElement && svg.parentElement.classList.contains('svg-bg-wrapper') ? svg.parentElement : null;
+  const { zoom } = loadSettings();
+  const svgWrapper =
+    svg.parentElement && svg.parentElement.classList.contains('svg-bg-wrapper') ? svg.parentElement : null;
   // Сброс фона
   svgWrapper.style.background = '';
   svgWrapper.style.backgroundImage = '';
@@ -390,7 +392,7 @@ function updateCheckmark(svg, isCorrect, isFilled) {
     const rect = svg.getBoundingClientRect();
     const w = Math.round(rect.width);
     const h = Math.round(rect.height);
-    svgWrapper.style.backgroundSize = w + 'px ' + h + 'px';
+    svgWrapper.style.backgroundSize = w / zoom + 'px ' + h / zoom + 'px';
     svgWrapper.style.backgroundPosition = 'top';
     svgWrapper.style.backgroundRepeat = 'no-repeat';
     if (isCorrect) {
