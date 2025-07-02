@@ -439,37 +439,9 @@
             }
             input.placeholder = placeholder;
             // Маска времени и визуальная проверка
-            function updateSvgCheck() {
-              const svgCheckmark = svg.querySelector('#svg-checkmark');
-              const svgCross = svg.querySelector('#svg-cross');
-              if (!svgCheckmark || !svgCross) return;
-              svgCheckmark.style.display = 'none';
-              svgCross.style.display = 'none';
-              if (showDigital) return;
-              let val = input.value.trim();
-              let correct = times[i + j];
-              if (ampmMode) {
-                const [h, m] = correct.split(':').map(Number);
-                let hour = h % 12;
-                if (hour === 0) hour = 12;
-                const ampm = h < 12 ? 'AM' : 'PM';
-                correct = `${hour.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${ampm}`;
-                if (val.length === 8) val = val.replace(/\s+/g, ' ').toUpperCase();
-                correct = correct.toUpperCase();
-              }
-              if (val.length === correct.length) {
-                if (val === correct) {
-                  svgCheckmark.style.display = '';
-                  svgCross.style.display = 'none';
-                } else {
-                  svgCheckmark.style.display = 'none';
-                  svgCross.style.display = '';
-                }
-              }
-            }
             input.addEventListener('input', function(e) {
               maskTimeInput(this, ampmMode);
-              updateSvgCheck();
+              updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode);
             });
             input.addEventListener('keydown', function(e) {
               // Разрешаем только цифры, Backspace, Delete, стрелки, Tab
@@ -558,6 +530,36 @@
         if (ampmMode && input.value.length > 8) input.value = input.value.slice(0, 8);
         if (!ampmMode && input.value.length > 5) input.value = input.value.slice(0, 5);
         input._lastLength = input.value.length;
+      }
+
+      // --- ВНЕ generateClocks ---
+      function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
+        const svgCheckmark = svg.querySelector('#svg-checkmark');
+        const svgCross = svg.querySelector('#svg-cross');
+        if (!svgCheckmark || !svgCross) return;
+        svgCheckmark.style.display = 'none';
+        svgCross.style.display = 'none';
+        if (showDigital) return;
+        let val = input.value.trim();
+        let correct = times[i + j];
+        if (ampmMode) {
+          const [h, m] = correct.split(':').map(Number);
+          let hour = h % 12;
+          if (hour === 0) hour = 12;
+          const ampm = h < 12 ? 'AM' : 'PM';
+          correct = `${hour.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${ampm}`;
+          if (val.length === 8) val = val.replace(/\s+/g, ' ').toUpperCase();
+          correct = correct.toUpperCase();
+        }
+        if (val.length === correct.length) {
+          if (val === correct) {
+            svgCheckmark.style.display = '';
+            svgCross.style.display = 'none';
+          } else {
+            svgCheckmark.style.display = 'none';
+            svgCross.style.display = '';
+          }
+        }
       }
     </script>
   </body>
