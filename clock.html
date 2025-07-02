@@ -191,6 +191,10 @@
           <input type="checkbox" id="twentyFourClock" />
           24-часовой циферблат
         </label>
+        <label>
+          <input type="checkbox" id="ampmMode" />
+          12-часовой формат (AM/PM)
+        </label>
         <button onclick="saveSettings()">Сохранить</button>
         <button onclick="closeModal()">Закрыть</button>
       </div>
@@ -216,6 +220,7 @@
           showDigital: document.getElementById('showDigital').checked,
           showAnalog: document.getElementById('showAnalog').checked,
           twentyFourClock: document.getElementById('twentyFourClock').checked,
+          ampmMode: document.getElementById('ampmMode').checked,
         };
         sessionStorage.setItem('clockSettings', JSON.stringify(settings));
         closeModal();
@@ -230,6 +235,7 @@
           showDigital: false,
           showAnalog: true,
           twentyFourClock: false,
+          ampmMode: false,
         };
         const saved = JSON.parse(sessionStorage.getItem('clockSettings')) || defaults;
         document.getElementById('startTime').value = saved.start;
@@ -240,11 +246,13 @@
           document.getElementById('showAnalog').checked = saved.showAnalog !== false;
         if (document.getElementById('twentyFourClock'))
           document.getElementById('twentyFourClock').checked = saved.twentyFourClock === true;
+        if (document.getElementById('ampmMode'))
+          document.getElementById('ampmMode').checked = saved.ampmMode === true;
         return saved;
       }
 
       function generateClocks() {
-        const { start, end, step, showDigital, twentyFourClock } = loadSettings();
+        const { start, end, step, showDigital, twentyFourClock, ampmMode } = loadSettings();
         const showAnalog = document.getElementById('showAnalog') ? document.getElementById('showAnalog').checked : true;
         const startMinutes = toMinutes(start);
         const endMinutes = toMinutes(end);
@@ -349,17 +357,26 @@
             input.className = 'time-label';
             input.style.display = 'block';
             input.style.margin = '10px auto 0 auto';
-            input.style.width = '120px'; // увеличено
-            input.style.height = '35px'; // увеличено
-            input.style.fontSize = '25px'; // крупный шрифт
-            input.style.borderRadius = '6px'; // скругление
-            input.style.border = '2px solid #888'; // заметная рамка
+            input.style.width = '120px';
+            input.style.height = '35px';
+            input.style.fontSize = '25px';
+            input.style.borderRadius = '6px';
+            input.style.border = '2px solid #888';
             input.style.textAlign = 'center';
+            let placeholder = '___:___';
             if (showDigital && times[i + j]) {
-              input.placeholder = times[i + j];
-            } else {
-              input.placeholder = '___:___';
+              if (ampmMode) {
+                // Форматировать как 12-часовой с AM/PM
+                const [h, m] = times[i + j].split(':').map(Number);
+                let hour = h % 12;
+                if (hour === 0) hour = 12;
+                const ampm = h < 12 ? 'AM' : 'PM';
+                placeholder = `${hour.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${ampm}`;
+              } else {
+                placeholder = times[i + j];
+              }
             }
+            input.placeholder = placeholder;
             cell.appendChild(input);
             row.appendChild(cell);
           }
