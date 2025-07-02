@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Нарисуй стрелки времени</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    td {
+      width: 33.33%;
+      padding: 20px;
+      text-align: center;
+      vertical-align: top;
+    }
+    .time-label {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+    svg {
+      width: 150px;
+      height: 150px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Нарисуй стрелки времени</h1>
+
+  <!-- SVG шаблон -->
+  <template id="clock-template">
+    <svg viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="95" stroke="black" stroke-width="2" fill="white"/>
+      <g font-size="16" font-family="Arial" text-anchor="middle" dominant-baseline="middle">
+        <text x="100" y="20" transform="rotate(0,100,100)">12</text>
+        <text x="100" y="20" transform="rotate(30,100,100)">1</text>
+        <text x="100" y="20" transform="rotate(60,100,100)">2</text>
+        <text x="100" y="20" transform="rotate(90,100,100)">3</text>
+        <text x="100" y="20" transform="rotate(120,100,100)">4</text>
+        <text x="100" y="20" transform="rotate(150,100,100)">5</text>
+        <text x="100" y="20" transform="rotate(180,100,100)">6</text>
+        <text x="100" y="20" transform="rotate(210,100,100)">7</text>
+        <text x="100" y="20" transform="rotate(240,100,100)">8</text>
+        <text x="100" y="20" transform="rotate(270,100,100)">9</text>
+        <text x="100" y="20" transform="rotate(300,100,100)">10</text>
+        <text x="100" y="20" transform="rotate(330,100,100)">11</text>
+      </g>
+      <circle cx="100" cy="100" r="3" fill="black"/>
+    </svg>
+  </template>
+
+  <table id="clock-table"></table>
+
+  <script>
+    const times = [
+      '03:00', '06:30', '09:00',
+      '12:30', '01:00', '04:30',
+      '07:00', '10:30', '11:00',
+      '02:30', '05:00', '08:30'
+    ];
+
+    const table = document.getElementById('clock-table');
+    const template = document.getElementById('clock-template');
+
+    for (let i = 0; i < times.length; i += 3) {
+      const row = document.createElement('tr');
+      for (let j = 0; j < 3; j++) {
+        const cell = document.createElement('td');
+        const svg = template.content.cloneNode(true);
+        const label = document.createElement('div');
+        label.className = 'time-label';
+        label.textContent = times[i + j] || '';
+        cell.appendChild(svg);
+        cell.appendChild(label);
+        row.appendChild(cell);
+      }
+      table.appendChild(row);
+    }
+  </script>
+</body>
+</html>

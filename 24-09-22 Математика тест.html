@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Тесты по математке</title>
+    <style>
+      body {
+        font-family: 'MonoSpace', monospace;
+        font-size: 22px;
+      }
+      table {
+        width: 60%;
+        border-collapse: collapse;
+        margin: 20px auto;
+      }
+      th,
+      td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      /* Page Break */
+      @page {
+        size: A4; /* Define page size as A4 */
+        /* margin: 0; Remove default margin */
+      }
+
+      /* Ensure section break on print */
+      section {
+        page-break-after: always; /* Forces page break after each section */
+      }
+
+      /* Prevent the last section from adding an extra page */
+      section:last-of-type {
+        page-break-after: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h1>Задание: Вычислить выражения</h1>
+      <h2>
+        Дата:
+        <script>
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+
+          document.write(`${year}-${month}-${day}`); // Output in format YYYY-MM-DD
+        </script>
+      </h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Пример</th>
+            <th>Ответ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Table Data will be filled here using JavaScript -->
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Ответы</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Пример</th>
+            <th>Ответ</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody2"></tbody>
+      </table>
+    </section>
+
+    <pre>
+      Сделай 20 примеров только на сложение, вычитание, умножение.
+      До 100.
+      Формат  [{ "example", "answer" }]
+      ОБЯЗАТЕЛЬНО!!!! Соотношение примеров: Сложение 20%, Вычитание = 40, Умножение = остальное. В каждом примере должно быть 2 действия
+      Выдай только массив больше ничего.
+      Перемешай массив.
+    </pre>
+
+    <script>
+      const data = [
+        { example: '12 + 8 - 5', answer: 15 },
+        { example: '7 * 6 + 9', answer: 51 },
+        { example: '45 - 13 + 22', answer: 54 },
+        { example: '9 * 5 - 11', answer: 34 },
+        { example: '18 + 32 - 25', answer: 25 },
+        { example: '8 * 7 - 9', answer: 47 },
+        { example: '67 - 29 + 13', answer: 51 },
+        { example: '14 * 4 - 6', answer: 50 },
+        { example: '26 + 19 - 14', answer: 31 },
+        { example: '15 * 3 - 8', answer: 37 },
+        { example: '56 - 23 + 11', answer: 44 },
+        { example: '12 * 4 + 7', answer: 55 },
+        { example: '72 - 37 + 16', answer: 51 },
+        { example: '6 * 9 + 8', answer: 62 },
+        { example: '31 + 45 - 19', answer: 57 },
+        { example: '13 * 5 - 18', answer: 47 },
+        { example: '85 - 22 + 9', answer: 72 },
+        { example: '17 * 4 - 12', answer: 56 },
+        { example: '63 - 28 + 14', answer: 49 },
+        { example: '11 * 7 + 13', answer: 90 },
+      ];
+
+      const tableBody1 = document.querySelector('tbody');
+      const tableBody2 = document.getElementById('tableBody2');
+
+      data.forEach((item, index) => {
+        const row1 = tableBody1.insertRow();
+        row1.insertCell().textContent = index + 1;
+        row1.insertCell().textContent = item.example;
+        row1.insertCell().textContent = '';
+        // Add cells for other columns in tableBody1
+
+        const row2 = tableBody2.insertRow();
+        row2.insertCell().textContent = index + 1;
+        row2.insertCell().textContent = item.example;
+        row2.insertCell().textContent = item.answer;
+      });
+    </script>
+  </body>
+</html>

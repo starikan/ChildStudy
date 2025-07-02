@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Тесты по математике</title>
+    <style>
+      body {
+        font-family: 'MonoSpace', monospace;
+        font-size: 17px;
+      }
+
+      table {
+        width: 60%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        float: left;
+      }
+
+      th,
+      td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      /* Стиль для текста */
+      p {
+        width: 90%;
+        margin: 20px auto;
+        clear: both; /* Очищаем область после таблицы */
+      }
+
+      section {
+        clear: both;
+      }
+
+      /* Печать */
+      @media print {
+        html,
+        body {
+          height: 99%;
+        }
+
+        @page {
+          size: A4; /* Define page size as A4 */
+          /* margin: 0; */
+        }
+        section {
+          /* transform: scale(0.8);
+          transform-origin: top left; */
+          break-inside: avoid;
+          break-after: always; /* Forces page break after each section */
+          display: inline-block;
+        }
+
+        /* Prevent the last section from adding an extra page */
+        section:last-of-type {
+          break-after: avoid;
+        }
+
+        table,
+        h3,
+        h3,
+        div,
+        h3,
+        p {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h3>Задание: Вычислить выражения</h3>
+      <h3>
+        Дата:
+        <script>
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+
+          document.write(`${year}-${month}-${day}`);
+        </script>
+      </h3>
+
+      <!-- Блок с текстом "Интересные факты и теория" -->
+      <div>
+        <h3>Интересные факты и теория</h3>
+        <p>
+          Здесь могут быть приведены интересные факты или теоретическая информация, которая поможет лучше понять тему
+          задачи.
+        </p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Пример</th>
+            <th>Ответ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Данные таблицы будут вставлены с помощью JavaScript -->
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h3>Ответы</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Пример</th>
+            <th>Ответ</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody2"></tbody>
+      </table>
+      <p>
+        Сделай 20 примеров только на сложение, вычитание, умножение. До 300. Формат [{ "example", "answer" }].
+        ОБЯЗАТЕЛЬНО!!!! Соотношение примеров: Сложение 20%, Вычитание 40%, Умножение остальное. В каждом примере должно
+        быть 2 действия. Перемешай массив.
+      </p>
+    </section>
+
+    <script>
+      const data = [
+        { example: '27 * 8 + 19', answer: 235 },
+        { example: '154 - 43 + 28', answer: 139 },
+        { example: '76 * 4 - 35', answer: 269 },
+        { example: '92 * 3 + 21', answer: 297 },
+        { example: '88 * 5 - 47', answer: 393 },
+        { example: '234 - 98 + 54', answer: 190 },
+        { example: '56 * 6 + 33', answer: 369 },
+        { example: '121 - 58 + 17', answer: 80 },
+        { example: '84 * 7 - 23', answer: 565 },
+        { example: '68 * 3 + 42', answer: 246 },
+        { example: '49 * 6 - 32', answer: 262 },
+        { example: '76 * 4 + 15', answer: 319 },
+        { example: '112 - 43 + 67', answer: 136 },
+        { example: '83 * 3 - 22', answer: 227 },
+        { example: '73 * 5 + 19', answer: 384 },
+        { example: '58 * 4 - 11', answer: 221 },
+        { example: '91 - 57 + 29', answer: 63 },
+        { example: '69 * 8 - 56', answer: 496 },
+        { example: '135 - 66 + 18', answer: 87 },
+        { example: '97 * 6 + 13', answer: 595 },
+      ];
+
+      const tableBody1 = document.querySelector('tbody');
+      const tableBody2 = document.getElementById('tableBody2');
+
+      data.forEach((item, index) => {
+        const row1 = tableBody1.insertRow();
+        row1.insertCell().textContent = index + 1;
+        row1.insertCell().textContent = item.example;
+        row1.insertCell().textContent = '';
+
+        const row2 = tableBody2.insertRow();
+        row2.insertCell().textContent = index + 1;
+        row2.insertCell().textContent = item.example;
+        row2.insertCell().textContent = item.answer;
+      });
+    </script>
+  </body>
+</html>

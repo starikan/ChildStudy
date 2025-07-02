@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Тесты по математике</title>
+    <style>
+      body {
+        font-family: 'MonoSpace', monospace;
+        font-size: 15px;
+      }
+
+      table {
+        width: 60%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        float: left;
+      }
+
+      th,
+      td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      /* Стиль для текста */
+      p {
+        width: 90%;
+        margin: 20px auto;
+        clear: both; /* Очищаем область после таблицы */
+      }
+
+      section {
+        clear: both;
+      }
+
+      /* Печать */
+      @media print {
+        html,
+        body {
+          height: 99%;
+        }
+
+        @page {
+          size: A4; /* Define page size as A4 */
+          /* margin: 0; */
+        }
+        section {
+          /* transform: scale(0.8);
+          transform-origin: top left; */
+          break-inside: avoid;
+          break-after: always; /* Forces page break after each section */
+          display: inline-block;
+        }
+
+        /* Prevent the last section from adding an extra page */
+        section:last-of-type {
+          break-after: avoid;
+        }
+
+        table,
+        h3,
+        h3,
+        div,
+        h3,
+        p {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section>
+      <h3>Задание: Тимоша</h3>
+      <h3>
+        Дата:
+        <script>
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+
+          document.write(`${year}-${month}-${day}`);
+        </script>
+      </h3>
+
+      <!-- Блок с текстом "Интересные факты и теория" -->
+      <div>
+        <h3>Интересные факты и теория</h3>
+        <p>
+          Вот интересный факт про цифры: число 0 (ноль) является уникальным не только потому, что оно обозначает
+          отсутствие значения, но и потому, что оно является единственным числом, которое не может быть использовано в
+          качестве делителя. Деление на ноль не имеет смысла в математике, и любые попытки сделать это приводят к
+          неопределенности. Интересно, что ноль был изобретен в Индии в V веке и стал основой для нашей современной
+          десятичной системы чисел!
+        </p>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Пример</th>
+            <th>Ответ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Данные таблицы будут вставлены с помощью JavaScript -->
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h3>Ответы</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Пример</th>
+            <th>Ответ</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody2"></tbody>
+      </table>
+      <p>
+        Сделай 20 примеров только на сложение, вычитание, умножение. До 300. Формат [{ "example", "answer" }]
+        Соотношение примеров: Сложение 10%, Вычитание = 20, Умножение двузначных чисел на двузначные = остальное. В
+        каждом примере должно быть 1-2 действия Выдай только массив больше ничего. Перемешай массив.
+      </p>
+    </section>
+
+    <script>
+      const data = [
+        { example: '23 * 12 - 45', answer: 231 },
+        { example: '156 - 78 + 45', answer: 123 },
+        { example: '42 * 11 - 33', answer: 429 },
+        { example: '192 - 46 + 29', answer: 175 },
+        { example: '64 * 9 - 56', answer: 520 },
+        { example: '85 * 13 + 54', answer: 1159 },
+        { example: '74 * 8 - 28', answer: 564 },
+        { example: '220 - 89 + 43', answer: 174 },
+        { example: '35 * 15 - 72', answer: 453 },
+        { example: '29 + 56 - 22', answer: 63 },
+        { example: '82 * 7 + 19', answer: 593 },
+        { example: '154 - 67 + 38', answer: 125 },
+        { example: '53 * 12 - 66', answer: 570 },
+        { example: '99 * 10 - 75', answer: 915 },
+        { example: '248 - 122 + 37', answer: 163 },
+        { example: '72 * 6 - 48', answer: 384 },
+        { example: '84 * 9 + 31', answer: 787 },
+        { example: '265 - 113 + 22', answer: 174 },
+        { example: '66 * 5 - 33', answer: 297 },
+        { example: '77 * 11 + 55', answer: 892 },
+      ];
+
+      const tableBody1 = document.querySelector('tbody');
+      const tableBody2 = document.getElementById('tableBody2');
+
+      data.forEach((item, index) => {
+        const row1 = tableBody1.insertRow();
+        row1.insertCell().textContent = index + 1;
+        row1.insertCell().textContent = item.example;
+        row1.insertCell().textContent = '';
+
+        const row2 = tableBody2.insertRow();
+        row2.insertCell().textContent = index + 1;
+        row2.insertCell().textContent = item.example;
+        row2.insertCell().textContent = item.answer;
+      });
+    </script>
+  </body>
+</html>

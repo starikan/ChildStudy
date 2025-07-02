@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Тесты по математке</title>
+    <style>
+      body {
+        font-family: 'MonoSpace', monospace;
+        font-size: 22px;
+      }
+      table {
+        width: 60%;
+        border-collapse: collapse;
+        margin: 20px auto;
+      }
+      th,
+      td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      /* Page Break */
+      @page {
+        size: A4; /* Define page size as A4 */
+        margin: 0; /* Remove default margin */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Задание: Вычислить выражения</h1>
+    <h2>
+      Дата:
+      <script>
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        document.write(`${year}-${month}-${day}`); // Output in format YYYY-MM-DD
+      </script>
+    </h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>№</th>
+          <th>Пример</th>
+          <th>Ответ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Table Data will be filled here using JavaScript -->
+      </tbody>
+    </table>
+
+    <h2>Ответы</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>№</th>
+          <th>Пример</th>
+          <th>Ответ</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody2"></tbody>
+    </table>
+
+    <script>
+      const data = [
+        { example: '48 - 17', answer: 31 },
+        { example: '9 * 8', answer: 72 },
+        { example: '62 + 25', answer: 87 },
+        { example: '90 - 46', answer: 44 },
+        { example: '81 - 23', answer: 58 },
+        { example: '17 + 39', answer: 56 },
+        { example: '77 - 19', answer: 58 },
+        { example: '5 * 6', answer: 30 },
+        { example: '63 - 31', answer: 32 },
+        { example: '54 + 22', answer: 76 },
+        { example: '46 - 13', answer: 33 },
+        { example: '82 - 29', answer: 53 },
+        { example: '92 - 67', answer: 25 },
+        { example: '24 + 13', answer: 37 },
+        { example: '56 - 32', answer: 24 },
+        { example: '47 - 22', answer: 25 },
+        { example: '88 - 55', answer: 33 },
+        { example: '68 + 29', answer: 97 },
+        { example: '75 - 48', answer: 27 },
+        { example: '13 + 51', answer: 64 },
+      ];
+
+      const tableBody1 = document.querySelector('tbody');
+      const tableBody2 = document.getElementById('tableBody2');
+
+      data.forEach((item, index) => {
+        const row1 = tableBody1.insertRow();
+        row1.insertCell().textContent = index + 1;
+        row1.insertCell().textContent = item.example;
+        row1.insertCell().textContent = '';
+        // Add cells for other columns in tableBody1
+
+        const row2 = tableBody2.insertRow();
+        row2.insertCell().textContent = index + 1;
+        row2.insertCell().textContent = item.example;
+        row2.insertCell().textContent = item.answer;
+      });
+    </script>
+
+
+  </body>
+</html>
