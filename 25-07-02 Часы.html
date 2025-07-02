@@ -2,7 +2,7 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <title>Нарисуй стрелки времени</title>
+    <title>Тренажёр: учимся определять время по часам (аналоговые часы для детей)</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -59,7 +59,7 @@
     </style>
   </head>
   <body>
-    <h1>Нарисуй стрелки времени</h1>
+    <h1>Учимся определять время по часам</h1>
     <button id="settingsBtn">Настройки</button>
     <table id="clock-table"></table>
 
@@ -232,7 +232,7 @@
               // draw hands
               const [h, m] = times[i + j].split(':').map(Number);
               // hour hand
-              const hourAngle = ((h % 12) + m / 60) * 30; // 360/12=30
+              const hourAngle = ((h % 12) + m / 60) * 30;
               const hourX = 100 + 40 * Math.sin((Math.PI / 180) * hourAngle);
               const hourY = 100 - 40 * Math.cos((Math.PI / 180) * hourAngle);
               const hourHand = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -245,7 +245,7 @@
               hourHand.setAttribute('stroke-linecap', 'round');
               svg.appendChild(hourHand);
               // minute hand
-              const minAngle = m * 6; // 360/60=6
+              const minAngle = m * 6;
               const minX = 100 + 70 * Math.sin((Math.PI / 180) * minAngle);
               const minY = 100 - 70 * Math.cos((Math.PI / 180) * minAngle);
               const minHand = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -263,7 +263,21 @@
               const label = document.createElement('div');
               label.className = 'time-label';
               label.textContent = times[i + j];
+              label.style.display = 'block';
+              label.style.margin = '10px auto 0 auto';
+              label.style.width = '60px';
               cell.appendChild(label);
+            } else {
+              // Добавить поле для ручного ввода времени, выровненное по центру и с теми же размерами
+              const input = document.createElement('input');
+              input.type = 'text';
+              input.className = 'time-label';
+              input.placeholder = '__:__';
+              input.style.display = 'block';
+              input.style.margin = '10px auto 0 auto';
+              input.style.width = '60px';
+              input.style.textAlign = 'center';
+              cell.appendChild(input);
             }
             row.appendChild(cell);
           }
