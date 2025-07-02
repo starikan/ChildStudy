@@ -259,26 +259,19 @@
               svg.appendChild(minHand);
             }
             cell.appendChild(svgFragment);
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'time-label';
+            input.style.display = 'block';
+            input.style.margin = '10px auto 0 auto';
+            input.style.width = '60px';
+            input.style.textAlign = 'center';
             if (showDigital && times[i + j]) {
-              const label = document.createElement('div');
-              label.className = 'time-label';
-              label.textContent = times[i + j];
-              label.style.display = 'block';
-              label.style.margin = '10px auto 0 auto';
-              label.style.width = '60px';
-              cell.appendChild(label);
+              input.placeholder = times[i + j];
             } else {
-              // Добавить поле для ручного ввода времени, выровненное по центру и с теми же размерами
-              const input = document.createElement('input');
-              input.type = 'text';
-              input.className = 'time-label';
               input.placeholder = '__:__';
-              input.style.display = 'block';
-              input.style.margin = '10px auto 0 auto';
-              input.style.width = '60px';
-              input.style.textAlign = 'center';
-              cell.appendChild(input);
             }
+            cell.appendChild(input);
             row.appendChild(cell);
           }
           table.appendChild(row);
