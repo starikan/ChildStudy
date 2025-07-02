@@ -369,12 +369,24 @@ function updateReloadIcon(svg, isCorrect) {
   }
 }
 
-function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
+function updateCheckmark(svg, isCorrect, isFilled) {
   const svgCheckmark = svg.querySelector('#svg-checkmark');
   const svgCross = svg.querySelector('#svg-cross');
   if (!svgCheckmark || !svgCross) return;
   svgCheckmark.style.display = 'none';
   svgCross.style.display = 'none';
+  if (isFilled) {
+    if (isCorrect) {
+      svgCheckmark.style.display = '';
+      svgCross.style.display = 'none';
+    } else {
+      svgCheckmark.style.display = 'none';
+      svgCross.style.display = '';
+    }
+  }
+}
+
+function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
   if (showDigital) return;
   let val = input.value.trim();
   let correct = times[i + j];
@@ -387,19 +399,10 @@ function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
     if (val.length === 8) val = val.replace(/\s+/g, ' ').toUpperCase();
     correct = correct.toUpperCase();
   }
-
-  // --- reload icon logic ---
-  updateReloadIcon(svg, val.length === correct.length && val === correct);
-
-  if (val.length === correct.length) {
-    if (val === correct) {
-      svgCheckmark.style.display = '';
-      svgCross.style.display = 'none';
-    } else {
-      svgCheckmark.style.display = 'none';
-      svgCross.style.display = '';
-    }
-  }
+  const isFilled = val.length === correct.length;
+  const isCorrect = isFilled && val === correct;
+  updateReloadIcon(svg, isCorrect);
+  updateCheckmark(svg, isCorrect, isFilled);
 }
 
 // --- Day/Night icons logic ---
