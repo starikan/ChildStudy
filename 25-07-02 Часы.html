@@ -17,15 +17,17 @@
       .header-row {
         width: 100%;
         display: grid;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr auto auto;
         align-items: center;
         margin-bottom: 20px;
+        gap: 0 8px;
       }
       .header-row h1 {
         justify-self: center;
         margin: 0;
+        grid-column: 1 / 2;
       }
-      #settingsBtn {
+      #settingsBtn, #printBtn {
         justify-self: end;
         margin: 0;
         display: inline-block;
@@ -76,12 +78,18 @@
         display: block;
         margin-top: 10px;
       }
+      @media print {
+        .header-row button {
+          display: none !important;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="header-row">
       <h1>Учимся определять время по часам</h1>
-      <button id="settingsBtn" title="Настройки" aria-label="Настройки" style="font-size: 28px; background: none; border: none; cursor: pointer;">⚙️</button>
+      <button id="settingsBtn" title="Настройки" aria-label="Настройки">⚙️</button>
+      <button id="printBtn" title="Печать" aria-label="Печать">🖨️</button>
     </div>
     <table id="clock-table"></table>
 
@@ -151,6 +159,7 @@
       }
 
       document.getElementById('settingsBtn').onclick = openModal;
+      document.getElementById('printBtn').onclick = function() { window.print(); };
 
       function saveSettings() {
         const settings = {
