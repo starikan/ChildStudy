@@ -227,8 +227,8 @@
           start: '00:00',
           end: '23:59',
           step: '30',
-          showDigital: true,
-          showAnalog: false,
+          showDigital: false,
+          showAnalog: true,
           twentyFourClock: false,
         };
         const saved = JSON.parse(sessionStorage.getItem('clockSettings')) || defaults;
@@ -378,7 +378,11 @@
         return `${h}:${m}`;
       }
 
-      window.onload = generateClocks;
+      // Очищаем sessionStorage при загрузке страницы
+      window.onload = function() {
+        sessionStorage.removeItem('clockSettings');
+        generateClocks();
+      };
     </script>
   </body>
 </html>
