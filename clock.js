@@ -1,3 +1,15 @@
+// Очищаем sessionStorage при загрузке страницы
+window.onload = function () {
+  sessionStorage.removeItem('clockSettings');
+  setupLiveSettings();
+  setupGridAutoSwitch();
+  loadSvgTemplate(generateClocks);
+};
+
+document.getElementById('settingsBtn').onclick = openModal;
+document.getElementById('printBtn').onclick = () => window.print();
+document.getElementById('regenBtn').onclick = generateClocks;
+
 function openModal() {
   const modal = document.getElementById('settingsModal');
   modal.style.display = 'flex';
@@ -26,14 +38,6 @@ function closeModal() {
   }
   generateClocks();
 }
-
-document.getElementById('settingsBtn').onclick = openModal;
-document.getElementById('printBtn').onclick = function () {
-  window.print();
-};
-document.getElementById('regenBtn').onclick = function () {
-  generateClocks();
-};
 
 function getDefaultGridByDevice() {
   // Use User-Agent Client Hints API when available
@@ -345,14 +349,6 @@ function setupGridAutoSwitch() {
     }
   });
 }
-
-// Очищаем sessionStorage при загрузке страницы
-window.onload = function () {
-  sessionStorage.removeItem('clockSettings');
-  setupLiveSettings();
-  setupGridAutoSwitch();
-  loadSvgTemplate(generateClocks);
-};
 
 // Маска для поля времени: только цифры, авто-двоеточие, максимум 5 символов (или 8 с AM/PM)
 function maskTimeInput(input, ampmMode) {
