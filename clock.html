@@ -221,6 +221,14 @@
           <text x="100" y="35" transform="rotate(330,100,100)">23</text>
         </g>
         <circle cx="100" cy="100" r="3" fill="black" />
+        <!-- Галочка и крестик для проверки (правый верхний угол) -->
+        <g id="svg-checkmark" style="display:none">
+          <path d="M160 35 l10 15 l20 -25" stroke="green" stroke-width="5" fill="none"/>
+        </g>
+        <g id="svg-cross" style="display:none">
+          <line x1="160" y1="25" x2="190" y2="55" stroke="red" stroke-width="5"/>
+          <line x1="190" y1="25" x2="160" y2="55" stroke="red" stroke-width="5"/>
+        </g>
       </svg>
     </template>
 
@@ -430,9 +438,38 @@
               input.disabled = false; // enable input if digital time is hidden
             }
             input.placeholder = placeholder;
-            // Маска времени
+            // Маска времени и визуальная проверка
+            function updateSvgCheck() {
+              const svgCheckmark = svg.querySelector('#svg-checkmark');
+              const svgCross = svg.querySelector('#svg-cross');
+              if (!svgCheckmark || !svgCross) return;
+              svgCheckmark.style.display = 'none';
+              svgCross.style.display = 'none';
+              if (showDigital) return;
+              let val = input.value.trim();
+              let correct = times[i + j];
+              if (ampmMode) {
+                const [h, m] = correct.split(':').map(Number);
+                let hour = h % 12;
+                if (hour === 0) hour = 12;
+                const ampm = h < 12 ? 'AM' : 'PM';
+                correct = `${hour.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${ampm}`;
+                if (val.length === 8) val = val.replace(/\s+/g, ' ').toUpperCase();
+                correct = correct.toUpperCase();
+              }
+              if (val.length === correct.length) {
+                if (val === correct) {
+                  svgCheckmark.style.display = '';
+                  svgCross.style.display = 'none';
+                } else {
+                  svgCheckmark.style.display = 'none';
+                  svgCross.style.display = '';
+                }
+              }
+            }
             input.addEventListener('input', function(e) {
               maskTimeInput(this, ampmMode);
+              updateSvgCheck();
             });
             input.addEventListener('keydown', function(e) {
               // Разрешаем только цифры, Backspace, Delete, стрелки, Tab
