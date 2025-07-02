@@ -53,8 +53,8 @@
         font-size: 18px;
       }
       svg {
-        width: 150px;
-        height: 150px;
+        width: 180px;
+        height: 180px;
       }
       .modal {
         display: none;
@@ -81,6 +81,35 @@
       @media print {
         .header-row button {
           display: none !important;
+        }
+        body {
+          margin: 0;
+          padding: 0;
+          width: 210mm;
+          height: 297mm;
+          box-sizing: border-box;
+        }
+        html, body {
+          width: 210mm;
+          height: 297mm;
+          min-width: 0;
+          min-height: 0;
+          max-width: 210mm;
+          max-height: 297mm;
+        }
+        table {
+          width: 100%;
+          page-break-inside: avoid;
+        }
+        td {
+          padding: 8px;
+        }
+        .modal, #settingsModal {
+          display: none !important;
+        }
+        @page {
+          size: A4 portrait;
+          margin: 10mm;
         }
       }
     </style>
@@ -295,12 +324,16 @@
             input.className = 'time-label';
             input.style.display = 'block';
             input.style.margin = '10px auto 0 auto';
-            input.style.width = '60px';
+            input.style.width = '120px'; // увеличено
+            input.style.height = '35px'; // увеличено
+            input.style.fontSize = '25px'; // крупный шрифт
+            input.style.borderRadius = '6px'; // скругление
+            input.style.border = '2px solid #888'; // заметная рамка
             input.style.textAlign = 'center';
             if (showDigital && times[i + j]) {
               input.placeholder = times[i + j];
             } else {
-              input.placeholder = '__:__';
+              input.placeholder = '___:___';
             }
             cell.appendChild(input);
             row.appendChild(cell);
