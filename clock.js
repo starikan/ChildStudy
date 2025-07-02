@@ -1,8 +1,29 @@
 function openModal() {
-  document.getElementById('settingsModal').style.display = 'flex';
+  const modal = document.getElementById('settingsModal');
+  modal.style.display = 'flex';
+  // Добавляем backdrop listeners
+  modal._mouseBackdropHandler = function (e) {
+    if (e.target === modal) closeModal();
+  };
+  modal._touchBackdropHandler = function (e) {
+    if (e.target === modal) setTimeout(closeModal, 0);
+  };
+  modal.addEventListener('mousedown', modal._mouseBackdropHandler);
+  modal.addEventListener('touchstart', modal._touchBackdropHandler);
 }
+
 function closeModal() {
-  document.getElementById('settingsModal').style.display = 'none';
+  const modal = document.getElementById('settingsModal');
+  modal.style.display = 'none';
+  // Удаляем backdrop listeners
+  if (modal._mouseBackdropHandler) {
+    modal.removeEventListener('mousedown', modal._mouseBackdropHandler);
+    delete modal._mouseBackdropHandler;
+  }
+  if (modal._touchBackdropHandler) {
+    modal.removeEventListener('touchstart', modal._touchBackdropHandler);
+    delete modal._touchBackdropHandler;
+  }
   generateClocks();
 }
 
