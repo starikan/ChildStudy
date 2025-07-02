@@ -47,10 +47,10 @@ function getDefaultGridByDevice() {
   }
   // Fallback to screen width breakpoints
   const width = window.innerWidth;
-  if (width <= 600) {
+  if (width <= 900) {
     // Small screens (mobile)
     return { gridCols: 1, gridRows: 1 };
-  } else if (width <= 900) {
+  } else if (width <= 1200) {
     // Medium screens (tablet)
     return { gridCols: 2, gridRows: 2 };
   }
@@ -223,7 +223,7 @@ function generateClocks() {
       // Маска времени и визуальная проверка
       input.addEventListener('input', function (e) {
         maskTimeInput(this, ampmMode);
-        updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode);
+        updateSvgCheck(input, svg, times, i, j);
       });
 
       input.addEventListener('keydown', function (e) {
@@ -370,23 +370,34 @@ function updateReloadIcon(svg, isCorrect) {
 }
 
 function updateCheckmark(svg, isCorrect, isFilled) {
-  const svgCheckmark = svg.querySelector('#svg-checkmark');
-  const svgCross = svg.querySelector('#svg-cross');
-  if (!svgCheckmark || !svgCross) return;
-  svgCheckmark.style.display = 'none';
-  svgCross.style.display = 'none';
+  // Сброс фона
+  if (svg.parentElement) {
+    svg.parentElement.style.background = '';
+    svg.parentElement.style.backgroundImage = '';
+    svg.parentElement.style.backgroundSize = '';
+    svg.parentElement.style.backgroundPosition = '';
+    svg.parentElement.style.backgroundRepeat = '';
+  }
+
   if (isFilled) {
+    const rect = svg.getBoundingClientRect();
+    const w = Math.round(rect.width);
+    const h = Math.round(rect.height);
+    if (svg.parentElement) {
+      svg.parentElement.style.backgroundSize = w + 'px ' + h + 'px';
+      svg.parentElement.style.backgroundPosition = 'top';
+      svg.parentElement.style.backgroundRepeat = 'no-repeat';
+    }
     if (isCorrect) {
-      svgCheckmark.style.display = '';
-      svgCross.style.display = 'none';
+      svg.parentElement.style.backgroundImage = "url('good_monkey.gif')";
     } else {
-      svgCheckmark.style.display = 'none';
-      svgCross.style.display = '';
+      svg.parentElement.style.backgroundImage = "url('bad_monkey.png')";
     }
   }
 }
 
-function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
+function updateSvgCheck(input, svg, times, i, j) {
+  const { showDigital, ampmMode } = loadSettings();
   if (showDigital) return;
   let val = input.value.trim();
   let correct = times[i + j];
@@ -399,8 +410,10 @@ function updateSvgCheck(input, svg, times, i, j, showDigital, ampmMode) {
     if (val.length === 8) val = val.replace(/\s+/g, ' ').toUpperCase();
     correct = correct.toUpperCase();
   }
+
   const isFilled = val.length === correct.length;
   const isCorrect = isFilled && val === correct;
+
   updateReloadIcon(svg, isCorrect);
   updateCheckmark(svg, isCorrect, isFilled);
 }
