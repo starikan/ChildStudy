@@ -52,6 +52,16 @@
         margin-top: 10px;
         font-size: 18px;
       }
+      .time-label-input {
+        display: block;
+        margin: 10px auto 0 auto;
+        width: 120px;
+        height: 35px;
+        font-size: 25px;
+        border-radius: 6px;
+        border: 2px solid #888;
+        text-align: center;
+      }
       svg {
         width: 180px;
         height: 180px;
@@ -289,67 +299,24 @@
             const cell = document.createElement('td');
             // Клонируем SVG из preload
             const svg = svgTemplate.cloneNode(true);
-            // Управление стрелками через SVG-элементы
-            const hourHand = svg.querySelector('#clock-hour-hand');
-            const minHand = svg.querySelector('#clock-minute-hand');
+            // Управление стрелками через отдельную функцию
             if (showAnalog && times[i + j]) {
               const [h, m] = times[i + j].split(':').map(Number);
-              // hour hand
-              const hourAngle = ((h % 12) + m / 60) * 30;
-              const hourX = 100 + 40 * Math.sin((Math.PI / 180) * hourAngle);
-              const hourY = 100 - 40 * Math.cos((Math.PI / 180) * hourAngle);
-              hourHand.setAttribute('x1', '100');
-              hourHand.setAttribute('y1', '100');
-              hourHand.setAttribute('x2', hourX.toString());
-              hourHand.setAttribute('y2', hourY.toString());
-              hourHand.style.display = '';
-              // minute hand
-              const minAngle = m * 6;
-              const minX = 100 + 70 * Math.sin((Math.PI / 180) * minAngle);
-              const minY = 100 - 70 * Math.cos((Math.PI / 180) * minAngle);
-              minHand.setAttribute('x1', '100');
-              minHand.setAttribute('y1', '100');
-              minHand.setAttribute('x2', minX.toString());
-              minHand.setAttribute('y2', minY.toString());
-              minHand.style.display = '';
+              setClockHands(svg, h, m, true);
             } else {
-              if (hourHand) hourHand.style.display = 'none';
-              if (minHand) minHand.style.display = 'none';
+              setClockHands(svg, 0, 0, false);
             }
             // Скрытие/отображение 24ч цифр
             const tfGroup = svg.querySelector('.twentyfour-group');
             if (tfGroup) tfGroup.style.display = twentyFourClock ? '' : 'none';
 
             // --- Day/Night icons logic ---
-            const svgSun = svg.querySelector('#svg-sun');
-            const svgMoon = svg.querySelector('#svg-moon');
-            if (svgSun) svgSun.style.display = 'none';
-            if (svgMoon) svgMoon.style.display = 'none';
-            if (
-              showDayNightIcons &&
-              times[i + j] &&
-              (ampmMode || !showDigital)
-            ) {
-              const [h, m] = times[i + j].split(':').map(Number);
-              if (h < 12) {
-                if (svgSun) svgSun.style.display = '';
-              } else {
-                if (svgMoon) svgMoon.style.display = '';
-              }
-            }
+            setDayNightIcons(svg, times[i + j], showDayNightIcons, ampmMode, showDigital);
 
             cell.appendChild(svg);
             const input = document.createElement('input');
             input.type = 'text';
-            input.className = 'time-label';
-            input.style.display = 'block';
-            input.style.margin = '10px auto 0 auto';
-            input.style.width = '120px';
-            input.style.height = '35px';
-            input.style.fontSize = '25px';
-            input.style.borderRadius = '6px';
-            input.style.border = '2px solid #888';
-            input.style.textAlign = 'center';
+            input.className = 'time-label time-label-input';
             let placeholder = '___:___';
             if (showDigital && times[i + j]) {
               if (ampmMode) {
@@ -393,6 +360,39 @@
             row.appendChild(cell);
           }
           table.appendChild(row);
+        }
+      }
+
+      // Управление стрелками на SVG-часах
+      function setClockHands(svg, h, m, show) {
+        const hourHand = svg.querySelector('#clock-hour-hand');
+        const minHand = svg.querySelector('#clock-minute-hand');
+        if (show) {
+          // hour hand
+          const hourAngle = ((h % 12) + m / 60) * 30;
+          const hourX = 100 + 40 * Math.sin((Math.PI / 180) * hourAngle);
+          const hourY = 100 - 40 * Math.cos((Math.PI / 180) * hourAngle);
+          if (hourHand) {
+            hourHand.setAttribute('x1', '100');
+            hourHand.setAttribute('y1', '100');
+            hourHand.setAttribute('x2', hourX.toString());
+            hourHand.setAttribute('y2', hourY.toString());
+            hourHand.style.display = '';
+          }
+          // minute hand
+          const minAngle = m * 6;
+          const minX = 100 + 70 * Math.sin((Math.PI / 180) * minAngle);
+          const minY = 100 - 70 * Math.cos((Math.PI / 180) * minAngle);
+          if (minHand) {
+            minHand.setAttribute('x1', '100');
+            minHand.setAttribute('y1', '100');
+            minHand.setAttribute('x2', minX.toString());
+            minHand.setAttribute('y2', minY.toString());
+            minHand.style.display = '';
+          }
+        } else {
+          if (hourHand) hourHand.style.display = 'none';
+          if (minHand) minHand.style.display = 'none';
         }
       }
 
@@ -488,6 +488,26 @@
           } else {
             svgCheckmark.style.display = 'none';
             svgCross.style.display = '';
+          }
+        }
+      }
+
+      // --- Day/Night icons logic ---
+      function setDayNightIcons(svg, time, showDayNightIcons, ampmMode, showDigital) {
+        const svgSun = svg.querySelector('#svg-sun');
+        const svgMoon = svg.querySelector('#svg-moon');
+        if (svgSun) svgSun.style.display = 'none';
+        if (svgMoon) svgMoon.style.display = 'none';
+        if (
+          showDayNightIcons &&
+          time &&
+          (ampmMode || !showDigital)
+        ) {
+          const [h, m] = time.split(':').map(Number);
+          if (h < 12) {
+            if (svgSun) svgSun.style.display = '';
+          } else {
+            if (svgMoon) svgMoon.style.display = '';
           }
         }
       }
