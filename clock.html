@@ -229,6 +229,22 @@
           <line x1="160" y1="25" x2="190" y2="55" stroke="red" stroke-width="5"/>
           <line x1="190" y1="25" x2="160" y2="55" stroke="red" stroke-width="5"/>
         </g>
+        <g id="svg-sun" style="display:none">
+          <circle cx="30" cy="30" r="6" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+          <g stroke="#FFD700" stroke-width="1.2">
+            <line x1="30" y1="18" x2="30" y2="10"/>
+            <line x1="30" y1="42" x2="30" y2="50"/>
+            <line x1="18" y1="30" x2="10" y2="30"/>
+            <line x1="42" y1="30" x2="50" y2="30"/>
+            <line x1="22" y1="22" x2="16" y2="16"/>
+            <line x1="38" y1="22" x2="44" y2="16"/>
+            <line x1="22" y1="38" x2="16" y2="44"/>
+            <line x1="38" y1="38" x2="44" y2="44"/>
+          </g>
+        </g>
+        <g id="svg-moon" style="display:none">
+          <path d="M36 30 A6 6 0 1 1 30 24 A4 4 0 1 0 36 30" fill="#B0C4DE" stroke="#708090" stroke-width="1.2"/>
+        </g>
       </svg>
     </template>
 
@@ -269,6 +285,10 @@
           <input type="checkbox" id="ampmMode" />
           12-часовой формат (AM/PM)
         </label>
+        <label>
+          <input type="checkbox" id="showDayNightIcons" checked />
+          Показывать иконки дня/ночи
+        </label>
         <button onclick="closeModal()">Закрыть</button>
       </div>
     </div>
@@ -294,6 +314,7 @@
           showAnalog: true,
           twentyFourClock: false,
           ampmMode: false,
+          showDayNightIcons: true,
         };
         const saved = JSON.parse(sessionStorage.getItem('clockSettings')) || defaults;
         document.getElementById('startTime').value = saved.start;
@@ -306,11 +327,13 @@
           document.getElementById('twentyFourClock').checked = saved.twentyFourClock === true;
         if (document.getElementById('ampmMode'))
           document.getElementById('ampmMode').checked = saved.ampmMode === true;
+        if (document.getElementById('showDayNightIcons'))
+          document.getElementById('showDayNightIcons').checked = saved.showDayNightIcons !== false;
         return saved;
       }
 
       function generateClocks() {
-        const { start, end, step, showDigital, twentyFourClock, ampmMode } = loadSettings();
+        const { start, end, step, showDigital, twentyFourClock, ampmMode, showDayNightIcons } = loadSettings();
         const showAnalog = document.getElementById('showAnalog') ? document.getElementById('showAnalog').checked : true;
         const startMinutes = toMinutes(start);
         const endMinutes = toMinutes(end);
@@ -409,6 +432,22 @@
             // Скрытие/отображение 24ч цифр
             const tfGroup = svg.querySelector('.twentyfour-group');
             if (tfGroup) tfGroup.style.display = twentyFourClock ? '' : 'none';
+
+            // --- Day/Night icons logic ---
+            const svgSun = svg.querySelector('#svg-sun');
+            const svgMoon = svg.querySelector('#svg-moon');
+            if (svgSun) svgSun.style.display = 'none';
+            if (svgMoon) svgMoon.style.display = 'none';
+            if (showDayNightIcons && times[i + j]) {
+              const [h, m] = times[i + j].split(':').map(Number);
+              // Первая половина дня (0:00–11:59) — солнце, вторая (12:00–23:59) — луна
+              if (h < 12) {
+                if (svgSun) svgSun.style.display = '';
+              } else {
+                if (svgMoon) svgMoon.style.display = '';
+              }
+            }
+
             cell.appendChild(svgFragment);
             const input = document.createElement('input');
             input.type = 'text';
@@ -487,6 +526,7 @@
           showAnalog: document.getElementById('showAnalog').checked,
           twentyFourClock: document.getElementById('twentyFourClock').checked,
           ampmMode: document.getElementById('ampmMode').checked,
+          showDayNightIcons: document.getElementById('showDayNightIcons').checked,
         };
         sessionStorage.setItem('clockSettings', JSON.stringify(settings));
         generateClocks(); // не закрываем модалку
@@ -496,7 +536,7 @@
       function setupLiveSettings() {
         const ids = [
           'startTime', 'endTime', 'step',
-          'showDigital', 'showAnalog', 'twentyFourClock', 'ampmMode'
+          'showDigital', 'showAnalog', 'twentyFourClock', 'ampmMode', 'showDayNightIcons'
         ];
         ids.forEach(id => {
           const el = document.getElementById(id);
