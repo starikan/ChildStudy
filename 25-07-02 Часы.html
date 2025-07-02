@@ -110,6 +110,10 @@
           <input type="checkbox" id="showDigital" />
           Показывать цифровое время
         </label>
+        <label>
+          <input type="checkbox" id="showAnalog" checked />
+          Показывать стрелки на часах
+        </label>
         <button onclick="saveSettings()">Сохранить</button>
         <button onclick="closeModal()">Закрыть</button>
       </div>
@@ -132,6 +136,7 @@
           end: document.getElementById('endTime').value || '23:59',
           step: document.getElementById('step').value,
           showDigital: document.getElementById('showDigital').checked,
+          showAnalog: document.getElementById('showAnalog').checked,
         };
         sessionStorage.setItem('clockSettings', JSON.stringify(settings));
         closeModal();
@@ -144,17 +149,21 @@
           end: '23:59',
           step: '30',
           showDigital: true,
+          showAnalog: true,
         };
         const saved = JSON.parse(sessionStorage.getItem('clockSettings')) || defaults;
         document.getElementById('startTime').value = saved.start;
         document.getElementById('endTime').value = saved.end;
         document.getElementById('step').value = saved.step;
         document.getElementById('showDigital').checked = saved.showDigital;
+        if (document.getElementById('showAnalog'))
+          document.getElementById('showAnalog').checked = saved.showAnalog !== false;
         return saved;
       }
 
       function generateClocks() {
         const { start, end, step, showDigital } = loadSettings();
+        const showAnalog = document.getElementById('showAnalog') ? document.getElementById('showAnalog').checked : true;
         const startMinutes = toMinutes(start);
         const endMinutes = toMinutes(end);
         const stepVal = step === 'random' ? 1 : parseInt(step); // 1 минута для random
@@ -217,8 +226,39 @@
           const row = document.createElement('tr');
           for (let j = 0; j < 3; j++) {
             const cell = document.createElement('td');
-            const svg = template.content.cloneNode(true);
-            cell.appendChild(svg);
+            const svgFragment = template.content.cloneNode(true);
+            const svg = svgFragment.querySelector('svg');
+            if (showAnalog && times[i + j]) {
+              // draw hands
+              const [h, m] = times[i + j].split(':').map(Number);
+              // hour hand
+              const hourAngle = ((h % 12) + m / 60) * 30; // 360/12=30
+              const hourX = 100 + 40 * Math.sin((Math.PI / 180) * hourAngle);
+              const hourY = 100 - 40 * Math.cos((Math.PI / 180) * hourAngle);
+              const hourHand = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+              hourHand.setAttribute('x1', '100');
+              hourHand.setAttribute('y1', '100');
+              hourHand.setAttribute('x2', hourX.toString());
+              hourHand.setAttribute('y2', hourY.toString());
+              hourHand.setAttribute('stroke', 'black');
+              hourHand.setAttribute('stroke-width', '5');
+              hourHand.setAttribute('stroke-linecap', 'round');
+              svg.appendChild(hourHand);
+              // minute hand
+              const minAngle = m * 6; // 360/60=6
+              const minX = 100 + 70 * Math.sin((Math.PI / 180) * minAngle);
+              const minY = 100 - 70 * Math.cos((Math.PI / 180) * minAngle);
+              const minHand = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+              minHand.setAttribute('x1', '100');
+              minHand.setAttribute('y1', '100');
+              minHand.setAttribute('x2', minX.toString());
+              minHand.setAttribute('y2', minY.toString());
+              minHand.setAttribute('stroke', 'black');
+              minHand.setAttribute('stroke-width', '3');
+              minHand.setAttribute('stroke-linecap', 'round');
+              svg.appendChild(minHand);
+            }
+            cell.appendChild(svgFragment);
             if (showDigital && times[i + j]) {
               const label = document.createElement('div');
               label.className = 'time-label';
