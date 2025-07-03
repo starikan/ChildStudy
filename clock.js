@@ -459,8 +459,8 @@ function updateCheckmark(svg, isCorrect, isFilled, monkeyImages) {
     overlay = document.createElement('div');
     overlay.className = 'checkmark-overlay';
     overlay.style.position = 'absolute';
-    overlay.style.left = '70%'; // примерно в секторе 01-02 часов
-    overlay.style.top = '8%';
+    overlay.style.left = '80%'; // примерно в секторе 01-02 часов
+    overlay.style.top = '-40%';
     overlay.style.width = '22%';
     overlay.style.height = '22%';
     overlay.style.display = 'flex';
