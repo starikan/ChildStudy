@@ -33,6 +33,20 @@ h1 {
   border: none;
   cursor: pointer;
 }
+.icon-btn {
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 0 6px;
+  transition: background 0.15s;
+  border-radius: 6px;
+}
+.icon-btn:hover, .icon-btn:focus {
+  background: #e3f2fd;
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -61,6 +75,9 @@ td {
 svg {
   width: 180px;
   height: 180px;
+}
+.svg-template-preload {
+  display: none;
 }
 .modal {
   display: none;
@@ -144,6 +161,19 @@ svg {
 .modal-content button:hover {
   background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
   box-shadow: 0 4px 16px rgba(25,118,210,0.13);
+}
+.modal-number-input {
+  width: 60px;
+  min-width: 0;
+  max-width: 100px;
+  font-size: 1em;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1.5px solid #b0b0b0;
+  background: #f8fafd;
+  margin-left: auto;
+  margin-right: 0;
+  box-sizing: border-box;
 }
 @media (max-width: 600px) {
   .modal-content {

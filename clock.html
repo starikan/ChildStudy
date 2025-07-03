@@ -14,7 +14,7 @@
         id="regenBtn"
         title="Перегенерировать задания"
         aria-label="Перегенерировать"
-        style="font-size: 28px; background: none; border: none; cursor: pointer"
+        class="icon-btn"
       >
         🔄
       </button>
@@ -22,8 +22,7 @@
     <table id="clock-table"></table>
 
     <!-- SVG шаблон -->
-    <!-- <template id="clock-template"> ... </template> -->
-    <div id="svg-template-preload" style="display: none"></div>
+    <div id="svg-template-preload" class="svg-template-preload"></div>
 
     <!-- Модальное окно -->
     <div class="modal" id="settingsModal">
@@ -68,11 +67,11 @@
         </label>
         <label>
           Столбцов:
-          <input type="number" id="gridCols" min="1" max="5" value="3" style="width: 60px" />
+          <input type="number" id="gridCols" min="1" max="5" value="3" class="modal-number-input" />
         </label>
         <label>
           Строк:
-          <input type="number" id="gridRows" min="1" max="5" value="4" style="width: 60px" />
+          <input type="number" id="gridRows" min="1" max="5" value="4" class="modal-number-input" />
         </label>
         <button onclick="closeModal()">Закрыть</button>
       </div>
