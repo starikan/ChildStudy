@@ -12,6 +12,7 @@ window.onload = function () {
 document.getElementById('settingsBtn').onclick = openModal;
 document.getElementById('printBtn').onclick = () => window.print();
 document.getElementById('regenBtn').onclick = generateClocks;
+document.getElementById('helpBtn').onclick = openHelpModal;
 
 function openModal() {
   const modal = document.getElementById('settingsModal');
@@ -41,6 +42,33 @@ function closeModal() {
   }
   updateUrlWithSettings(loadSettings());
   generateClocks();
+}
+
+function openHelpModal() {
+  const modal = document.getElementById('helpModal');
+  modal.style.display = 'flex';
+  // backdrop listeners
+  modal._mouseBackdropHandler = function (e) {
+    if (e.target === modal) closeHelpModal();
+  };
+  modal._touchBackdropHandler = function (e) {
+    if (e.target === modal) setTimeout(closeHelpModal, 0);
+  };
+  modal.addEventListener('mousedown', modal._mouseBackdropHandler);
+  modal.addEventListener('touchstart', modal._touchBackdropHandler);
+}
+
+function closeHelpModal() {
+  const modal = document.getElementById('helpModal');
+  modal.style.display = 'none';
+  if (modal._mouseBackdropHandler) {
+    modal.removeEventListener('mousedown', modal._mouseBackdropHandler);
+    delete modal._mouseBackdropHandler;
+  }
+  if (modal._touchBackdropHandler) {
+    modal.removeEventListener('touchstart', modal._touchBackdropHandler);
+    delete modal._touchBackdropHandler;
+  }
 }
 
 const DEFAULT_CLOCK_SETTINGS = {
