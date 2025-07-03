@@ -279,9 +279,13 @@ function generateClocks() {
       input.placeholder = placeholder;
 
       // Маска времени и визуальная проверка
+      let lastInputValue = '';
       input.addEventListener('input', function (e) {
         maskTimeInput(this, ampmMode);
-        updateSvgCheck(input, svg, times, i, j);
+        if (this.value !== lastInputValue) {
+          updateSvgCheck(input, svg, times, i, j);
+          lastInputValue = this.value;
+        }
       });
 
       input.addEventListener('keydown', function (e) {
@@ -425,12 +429,13 @@ function updateCheckmark(svg, isCorrect, isFilled) {
   if (isFilled) {
     svgWrapper.style.backgroundPosition = 'center';
     svgWrapper.style.backgroundRepeat = 'no-repeat';
+    svgWrapper.style.backgroundSize = 'cover';
     // После смены фона обновляем цвет SVG для контрастности
     updateSVGColor(svg);
     if (isCorrect) {
-      svgWrapper.style.backgroundImage = "url('good_monkey.gif')";
+      svgWrapper.style.backgroundImage = `url('${getRandomFrom(GOOD_MONKEY_IMAGES)}')`;
     } else {
-      svgWrapper.style.backgroundImage = "url('bad_monkey.png')";
+      svgWrapper.style.backgroundImage = `url('${getRandomFrom(BAD_MONKEY_IMAGES)}')`;
     }
   }
 }
@@ -573,4 +578,25 @@ function updateUrlWithSettings(settings) {
   params.set('gridRows', settings.gridRows);
   const newUrl = window.location.pathname + '?' + params.toString();
   window.history.replaceState({}, '', newUrl);
+}
+
+// --- Список файлов с обезьянами ---
+const GOOD_MONKEY_IMAGES = [
+  'good_monkey.gif',
+  'good_monkey_2.gif',
+  'good_monkey_3.gif',
+  'good_monkey_4.gif',
+  'good_monkey_5.gif',
+  'good_monkey_6.gif',
+];
+const BAD_MONKEY_IMAGES = [
+  'bad_monkey.png',
+  'bad_monkey_2.gif',
+  'bad_monkey_3.gif',
+  'bad_monkey_4.jpg',
+  'bad_monkey_5.jpg',
+  'bad_monkey_6.jpg',
+];
+function getRandomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
