@@ -437,7 +437,13 @@ function updateCheckmark(svg, isCorrect, isFilled, monkeyImages) {
   svgWrapper.style.backgroundPosition = '';
   svgWrapper.style.backgroundRepeat = '';
   updateSVGColor(svg, 'black');
+
+  // Удаляем старый overlay если был
+  let overlay = svgWrapper.querySelector('.checkmark-overlay');
+  if (overlay) svgWrapper.removeChild(overlay);
+
   if (isFilled) {
+
     svgWrapper.style.backgroundPosition = 'center';
     svgWrapper.style.backgroundRepeat = 'no-repeat';
     svgWrapper.style.backgroundSize = 'cover';
@@ -448,6 +454,24 @@ function updateCheckmark(svg, isCorrect, isFilled, monkeyImages) {
     } else {
       svgWrapper.style.backgroundImage = `url('${monkeyImages ? monkeyImages.bad : getRandomFrom(BAD_MONKEY_IMAGES)}')`;
     }
+
+    // Маленькая галочка или крестик в районе 01-30 (правый верхний угол)
+    overlay = document.createElement('div');
+    overlay.className = 'checkmark-overlay';
+    overlay.style.position = 'absolute';
+    overlay.style.left = '70%'; // примерно в секторе 01-02 часов
+    overlay.style.top = '8%';
+    overlay.style.width = '22%';
+    overlay.style.height = '22%';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'flex-start';
+    overlay.style.justifyContent = 'flex-end';
+    overlay.style.pointerEvents = 'none';
+    overlay.style.zIndex = 2;
+    overlay.innerHTML = isCorrect
+      ? `<svg width="28" height="28" viewBox="0 0 60 60"><polyline points="12,32 26,48 48,14" fill="none" stroke="#43a047" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : `<svg width="28" height="28" viewBox="0 0 60 60"><line x1="15" y1="15" x2="45" y2="45" stroke="#e53935" stroke-width="7" stroke-linecap="round"/><line x1="45" y1="15" x2="15" y2="45" stroke="#e53935" stroke-width="7" stroke-linecap="round"/></svg>`;
+    svgWrapper.appendChild(overlay);
   }
 }
 
