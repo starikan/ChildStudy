@@ -425,17 +425,17 @@ function updateSvgCheck(input, svg, times, i, j) {
 
 // --- Day/Night icons logic ---
 function setDayNightIcons(svg, time, showDayNightIcons, ampmMode, showDigital) {
-  const svgSun = svg.querySelector('#svg-sun');
-  const svgMoon = svg.querySelector('#svg-moon');
-  if (svgSun) svgSun.style.display = 'none';
-  if (svgMoon) svgMoon.style.display = 'none';
+  // Скрываем надписи AM/PM по умолчанию
+  const amLabel = svg.querySelector('#am-label');
+  const pmLabel = svg.querySelector('#pm-label');
+  if (amLabel) amLabel.style.display = 'none';
+  if (pmLabel) pmLabel.style.display = 'none';
   if (showDayNightIcons && time && (ampmMode || !showDigital)) {
-    const [h, m] = time.split(':').map(Number);
-    if (h < 12) {
-      if (svgSun) svgSun.style.display = '';
-    } else {
-      if (svgMoon) svgMoon.style.display = '';
-    }
+    const [h] = time.split(':').map(Number);
+    let isAM = h < 12;
+    // Показываем нужную надпись
+    if (isAM && amLabel) amLabel.style.display = '';
+    if (!isAM && pmLabel) pmLabel.style.display = '';
   }
 }
 
