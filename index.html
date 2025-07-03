@@ -77,7 +77,15 @@
     <span class="clock-emoji">🕒</span>
     <h1>Тренажёр по определению времени</h1>
     <p>Интерактивный тренажёр для детей: учимся определять время по аналоговым (стрелочным) часам.<br>Настраивайте задания, печатайте, тренируйтесь!</p>
-    <a class="button" href="clock.html">Перейти к тренажёру</a>
+    <a class="button" href="clock.html">Обычный режим</a>
+    <div style="margin-top:24px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+      <a class="button" style="padding:12px 18px;font-size:1em;" href="clock.html?showAnalog=true&showDigital=false&ampmMode=false&gridCols=1&gridRows=1">Тренировка Стрелки</a>
+      <a class="button" style="padding:12px 18px;font-size:1em;" href="clock.html?showAnalog=false&showDigital=true&gridCols=1&gridRows=1">Тренировка Цифры</a>
+      <a class="button" style="padding:12px 18px;font-size:1em;" href="clock.html?showAnalog=true&showDigital=false&ampmMode=true&gridCols=1&gridRows=1">Тренировка AM/PM</a>
+      <a class="button" style="padding:12px 18px;font-size:1em;" href="clock.html?showAnalog=true&showDigital=false&gridCols=3&gridRows=4">Печать Стрелки 3×4</a>
+      <a class="button" style="padding:12px 18px;font-size:1em;" href="clock.html?showAnalog=false&showDigital=true&gridCols=3&gridRows=4">Печать Цифры 3×4</a>
+      <a class="button" style="padding:12px 18px;font-size:1em;" href="clock.html?showAnalog=true&showDigital=false&ampmMode=true&gridCols=3&gridRows=4">Печать AM/PM 3×4</a>
+    </div>
   </div>
 </body>
 </html>
