@@ -39,8 +39,22 @@ function closeModal() {
     modal.removeEventListener('touchstart', modal._touchBackdropHandler);
     delete modal._touchBackdropHandler;
   }
+  updateUrlWithSettings(loadSettings());
   generateClocks();
 }
+
+const DEFAULT_CLOCK_SETTINGS = {
+  start: '00:00',
+  end: '23:59',
+  step: '30',
+  showDigital: false,
+  showAnalog: true,
+  twentyFourClock: false,
+  ampmMode: false,
+  showDayNightIcons: true,
+  gridCols: 3,
+  gridRows: 4
+};
 
 function getDefaultGridByDevice() {
   // Use User-Agent Client Hints API when available
@@ -64,18 +78,8 @@ function getDefaultGridByDevice() {
 
 function loadSettings() {
   const deviceGrid = getDefaultGridByDevice();
-  const defaults = {
-    start: '00:00',
-    end: '23:59',
-    step: '30',
-    showDigital: false,
-    showAnalog: true,
-    twentyFourClock: false,
-    ampmMode: false,
-    showDayNightIcons: true,
-    gridCols: deviceGrid.gridCols,
-    gridRows: deviceGrid.gridRows,
-  };
+  // Берём дефолты и подменяем gridCols/gridRows под устройство
+  const defaults = { ...DEFAULT_CLOCK_SETTINGS, gridCols: deviceGrid.gridCols, gridRows: deviceGrid.gridRows };
   const saved = JSON.parse(sessionStorage.getItem('clockSettings')) || defaults;
   document.getElementById('startTime').value = saved.start;
   document.getElementById('endTime').value = saved.end;
@@ -494,6 +498,8 @@ function updateSVGColor(svgElement, color) {
 // Парсинг настроек из URL
 function parseSettingsFromUrl() {
   const params = new URLSearchParams(window.location.search);
+  // Значения по умолчанию
+  const defaults = { ...DEFAULT_CLOCK_SETTINGS };
   const settings = {};
   // Валидация времени (HH:MM)
   function isValidTime(val) {
@@ -512,16 +518,16 @@ function parseSettingsFromUrl() {
   function isValidStep(val) {
     return ['30','15','10','random'].includes(val);
   }
-  if (params.has('start') && isValidTime(params.get('start'))) settings.start = params.get('start');
-  if (params.has('end') && isValidTime(params.get('end'))) settings.end = params.get('end');
-  if (params.has('step') && isValidStep(params.get('step'))) settings.step = params.get('step');
-  if (params.has('showDigital') && isValidBool(params.get('showDigital'))) settings.showDigital = params.get('showDigital') === 'true';
-  if (params.has('showAnalog') && isValidBool(params.get('showAnalog'))) settings.showAnalog = params.get('showAnalog') === 'true';
-  if (params.has('twentyFourClock') && isValidBool(params.get('twentyFourClock'))) settings.twentyFourClock = params.get('twentyFourClock') === 'true';
-  if (params.has('ampmMode') && isValidBool(params.get('ampmMode'))) settings.ampmMode = params.get('ampmMode') === 'true';
-  if (params.has('showDayNightIcons') && isValidBool(params.get('showDayNightIcons'))) settings.showDayNightIcons = params.get('showDayNightIcons') === 'true';
-  if (params.has('gridCols') && isValidInt(params.get('gridCols'), 1, 5)) settings.gridCols = parseInt(params.get('gridCols'));
-  if (params.has('gridRows') && isValidInt(params.get('gridRows'), 1, 5)) settings.gridRows = parseInt(params.get('gridRows'));
+  settings.start = (params.has('start') && isValidTime(params.get('start'))) ? params.get('start') : defaults.start;
+  settings.end = (params.has('end') && isValidTime(params.get('end'))) ? params.get('end') : defaults.end;
+  settings.step = (params.has('step') && isValidStep(params.get('step'))) ? params.get('step') : defaults.step;
+  settings.showDigital = (params.has('showDigital') && isValidBool(params.get('showDigital'))) ? params.get('showDigital') === 'true' : defaults.showDigital;
+  settings.showAnalog = (params.has('showAnalog') && isValidBool(params.get('showAnalog'))) ? params.get('showAnalog') === 'true' : defaults.showAnalog;
+  settings.twentyFourClock = (params.has('twentyFourClock') && isValidBool(params.get('twentyFourClock'))) ? params.get('twentyFourClock') === 'true' : defaults.twentyFourClock;
+  settings.ampmMode = (params.has('ampmMode') && isValidBool(params.get('ampmMode'))) ? params.get('ampmMode') === 'true' : defaults.ampmMode;
+  settings.showDayNightIcons = (params.has('showDayNightIcons') && isValidBool(params.get('showDayNightIcons'))) ? params.get('showDayNightIcons') === 'true' : defaults.showDayNightIcons;
+  settings.gridCols = (params.has('gridCols') && isValidInt(params.get('gridCols'), 1, 5)) ? parseInt(params.get('gridCols')) : defaults.gridCols;
+  settings.gridRows = (params.has('gridRows') && isValidInt(params.get('gridRows'), 1, 5)) ? parseInt(params.get('gridRows')) : defaults.gridRows;
   return settings;
 }
 
