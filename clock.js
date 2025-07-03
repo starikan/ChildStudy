@@ -263,6 +263,8 @@ function generateClocks() {
 function setClockHands(svg, h, m, show) {
   const hourHand = svg.querySelector('#clock-hour-hand');
   const minHand = svg.querySelector('#clock-minute-hand');
+  const hourDots = svg.querySelector('#hour-dots');
+  const minuteDots = svg.querySelector('#minute-dots');
   if (show) {
     // hour hand
     const hourAngle = ((h % 12) + m / 60) * 30;
@@ -286,9 +288,15 @@ function setClockHands(svg, h, m, show) {
       minHand.setAttribute('y2', minY.toString());
       minHand.style.display = '';
     }
+    // Скрыть пунктирные кружки
+    if (hourDots) hourDots.style.display = 'none';
+    if (minuteDots) minuteDots.style.display = 'none';
   } else {
     if (hourHand) hourHand.style.display = 'none';
     if (minHand) minHand.style.display = 'none';
+    // Показать пунктирные кружки
+    if (hourDots) hourDots.style.display = '';
+    if (minuteDots) minuteDots.style.display = '';
   }
 }
 
