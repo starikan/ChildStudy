@@ -90,6 +90,19 @@ function loadSettings() {
   return saved;
 }
 
+// LIVE MODE: применяем настройки сразу при изменении
+function setupLiveSettings() {
+  const ids = Object.keys(loadSettings());
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.oninput = el.onchange = function () {
+        saveSettings();
+      };
+    }
+  });
+}
+
 // Загрузка SVG-шаблона из файла и вставка в preload-div
 function loadSvgTemplate(callback) {
   fetch('clock-template.svg')
@@ -326,30 +339,6 @@ function saveSettings() {
   };
   sessionStorage.setItem('clockSettings', JSON.stringify(settings));
   generateClocks(); // не закрываем модалку
-}
-
-// LIVE MODE: применяем настройки сразу при изменении
-function setupLiveSettings() {
-  const ids = [
-    'startTime',
-    'endTime',
-    'step',
-    'showDigital',
-    'showAnalog',
-    'twentyFourClock',
-    'ampmMode',
-    'showDayNightIcons',
-    'gridCols',
-    'gridRows',
-  ];
-  ids.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.oninput = el.onchange = function () {
-        saveSettings();
-      };
-    }
-  });
 }
 
 // Маска для поля времени: только цифры, авто-двоеточие, максимум 5 символов (или 8 с AM/PM)
