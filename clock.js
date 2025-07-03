@@ -1,6 +1,10 @@
 // Очищаем sessionStorage при загрузке страницы
 window.onload = function () {
-  sessionStorage.removeItem('clockSettings');
+  // Парсим настройки из URL, если есть
+  const urlSettings = parseSettingsFromUrl();
+  if (Object.keys(urlSettings).length > 0) {
+    sessionStorage.setItem('clockSettings', JSON.stringify(urlSettings));
+  }
   setupLiveSettings();
   loadSvgTemplate(generateClocks);
 };
@@ -338,6 +342,7 @@ function saveSettings() {
     gridRows: parseInt(document.getElementById('gridRows').value) || 4,
   };
   sessionStorage.setItem('clockSettings', JSON.stringify(settings));
+  updateUrlWithSettings(settings);
   generateClocks(); // не закрываем модалку
 }
 
@@ -484,4 +489,54 @@ function updateSVGColor(svgElement, color) {
     el.setAttribute('fill', contrastColor);
   });
 
+}
+
+// Парсинг настроек из URL
+function parseSettingsFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const settings = {};
+  // Валидация времени (HH:MM)
+  function isValidTime(val) {
+    return /^([01]\d|2[0-3]):[0-5]\d$/.test(val);
+  }
+  // Валидация числа в диапазоне
+  function isValidInt(val, min, max) {
+    const n = Number(val);
+    return Number.isInteger(n) && n >= min && n <= max;
+  }
+  // Валидация булевых
+  function isValidBool(val) {
+    return val === 'true' || val === 'false';
+  }
+  // Валидация step
+  function isValidStep(val) {
+    return ['30','15','10','random'].includes(val);
+  }
+  if (params.has('start') && isValidTime(params.get('start'))) settings.start = params.get('start');
+  if (params.has('end') && isValidTime(params.get('end'))) settings.end = params.get('end');
+  if (params.has('step') && isValidStep(params.get('step'))) settings.step = params.get('step');
+  if (params.has('showDigital') && isValidBool(params.get('showDigital'))) settings.showDigital = params.get('showDigital') === 'true';
+  if (params.has('showAnalog') && isValidBool(params.get('showAnalog'))) settings.showAnalog = params.get('showAnalog') === 'true';
+  if (params.has('twentyFourClock') && isValidBool(params.get('twentyFourClock'))) settings.twentyFourClock = params.get('twentyFourClock') === 'true';
+  if (params.has('ampmMode') && isValidBool(params.get('ampmMode'))) settings.ampmMode = params.get('ampmMode') === 'true';
+  if (params.has('showDayNightIcons') && isValidBool(params.get('showDayNightIcons'))) settings.showDayNightIcons = params.get('showDayNightIcons') === 'true';
+  if (params.has('gridCols') && isValidInt(params.get('gridCols'), 1, 5)) settings.gridCols = parseInt(params.get('gridCols'));
+  if (params.has('gridRows') && isValidInt(params.get('gridRows'), 1, 5)) settings.gridRows = parseInt(params.get('gridRows'));
+  return settings;
+}
+
+function updateUrlWithSettings(settings) {
+  const params = new URLSearchParams();
+  params.set('start', settings.start);
+  params.set('end', settings.end);
+  params.set('step', settings.step);
+  params.set('showDigital', settings.showDigital);
+  params.set('showAnalog', settings.showAnalog);
+  params.set('twentyFourClock', settings.twentyFourClock);
+  params.set('ampmMode', settings.ampmMode);
+  params.set('showDayNightIcons', settings.showDayNightIcons);
+  params.set('gridCols', settings.gridCols);
+  params.set('gridRows', settings.gridRows);
+  const newUrl = window.location.pathname + '?' + params.toString();
+  window.history.replaceState({}, '', newUrl);
 }
