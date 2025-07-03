@@ -221,6 +221,9 @@ function generateClocks() {
   // Получаем SVG-шаблон из preload
   const svgTemplate = document.getElementById('svg-template-preload').firstElementChild;
 
+  // Для каждой ячейки будем хранить выбранные картинки
+  const cellMonkeys = [];
+
   for (let i = 0; i < times.length; i += gridCols) {
     const row = document.createElement('tr');
     for (let j = 0; j < gridCols; j++) {
@@ -239,6 +242,14 @@ function generateClocks() {
       svgWrapper.style.height = svg.getAttribute('height') ? svg.getAttribute('height') + 'px' : '';
       svgWrapper.appendChild(svg);
       cell.appendChild(svgWrapper);
+
+      // --- Выбор и запоминание обезьян для этой ячейки ---
+      const goodMonkey = getRandomFrom(GOOD_MONKEY_IMAGES);
+      const badMonkey = getRandomFrom(BAD_MONKEY_IMAGES);
+      if (!cellMonkeys[i + j]) cellMonkeys[i + j] = {};
+      cellMonkeys[i + j].good = goodMonkey;
+      cellMonkeys[i + j].bad = badMonkey;
+      // --- конец блока выбора обезьян ---
 
       // Управление стрелками через отдельную функцию
       if (showAnalog && times[i + j]) {
@@ -283,7 +294,7 @@ function generateClocks() {
       input.addEventListener('input', function (e) {
         maskTimeInput(this, ampmMode);
         if (this.value !== lastInputValue) {
-          updateSvgCheck(input, svg, times, i, j);
+          updateSvgCheck(input, svg, times, i, j, cellMonkeys);
           lastInputValue = this.value;
         }
       });
@@ -416,7 +427,7 @@ function updateReloadIcon(svg, isCorrect) {
   }
 }
 
-function updateCheckmark(svg, isCorrect, isFilled) {
+function updateCheckmark(svg, isCorrect, isFilled, monkeyImages) {
   const svgWrapper =
     svg.parentElement && svg.parentElement.classList.contains('svg-bg-wrapper') ? svg.parentElement : null;
   // Сброс фона
@@ -433,14 +444,14 @@ function updateCheckmark(svg, isCorrect, isFilled) {
     // После смены фона обновляем цвет SVG для контрастности
     updateSVGColor(svg);
     if (isCorrect) {
-      svgWrapper.style.backgroundImage = `url('${getRandomFrom(GOOD_MONKEY_IMAGES)}')`;
+      svgWrapper.style.backgroundImage = `url('${monkeyImages ? monkeyImages.good : getRandomFrom(GOOD_MONKEY_IMAGES)}')`;
     } else {
-      svgWrapper.style.backgroundImage = `url('${getRandomFrom(BAD_MONKEY_IMAGES)}')`;
+      svgWrapper.style.backgroundImage = `url('${monkeyImages ? monkeyImages.bad : getRandomFrom(BAD_MONKEY_IMAGES)}')`;
     }
   }
 }
 
-function updateSvgCheck(input, svg, times, i, j) {
+function updateSvgCheck(input, svg, times, i, j, cellMonkeys) {
   const { showDigital, ampmMode } = loadSettings();
   if (showDigital) return;
   let val = input.value.trim();
@@ -459,7 +470,7 @@ function updateSvgCheck(input, svg, times, i, j) {
   const isCorrect = isFilled && val === correct;
 
   updateReloadIcon(svg, isCorrect);
-  updateCheckmark(svg, isCorrect, isFilled);
+  updateCheckmark(svg, isCorrect, isFilled, cellMonkeys ? cellMonkeys[i + j] : undefined);
 }
 
 // --- Day/Night icons logic ---
