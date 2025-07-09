@@ -80,6 +80,7 @@ const DEFAULT_CLOCK_SETTINGS = {
   twentyFourClock: false,
   ampmMode: false,
   showDayNightIcons: true,
+  textFormat: false,
   gridCols: 3,
   gridRows: 4
 };
@@ -119,6 +120,8 @@ function loadSettings() {
   if (document.getElementById('ampmMode')) document.getElementById('ampmMode').checked = saved.ampmMode === true;
   if (document.getElementById('showDayNightIcons'))
     document.getElementById('showDayNightIcons').checked = saved.showDayNightIcons !== false;
+  if (document.getElementById('textFormat'))
+    document.getElementById('textFormat').checked = saved.textFormat === true;
   if (document.getElementById('gridCols')) document.getElementById('gridCols').value = saved.gridCols || 3;
   if (document.getElementById('gridRows')) document.getElementById('gridRows').value = saved.gridRows || 4;
 
@@ -158,6 +161,7 @@ function generateClocks() {
     twentyFourClock,
     ampmMode,
     showDayNightIcons,
+    textFormat,
     gridCols = 3,
     gridRows = 4,
   } = loadSettings();
@@ -242,6 +246,20 @@ function generateClocks() {
       svgWrapper.style.height = svg.getAttribute('height') ? svg.getAttribute('height') + 'px' : '';
       svgWrapper.appendChild(svg);
       cell.appendChild(svgWrapper);
+
+      // Добавляем текстовое описание времени
+      if (times[i + j] && textFormat) {
+        let desc = generateTimeDescription(times[i + j]);
+        if (ampmMode) {
+          const hour = parseInt(times[i + j].split(':')[0], 10);
+          const suffix = hour < 12 ? 'AM' : 'PM';
+          desc += ` ${suffix}`;
+        }
+        const descElem = document.createElement('div');
+        descElem.className = 'time-description';
+        descElem.textContent = desc;
+        cell.appendChild(descElem);
+      }
 
       // --- Выбор и запоминание обезьян для этой ячейки ---
       const goodMonkey = getRandomFrom(GOOD_MONKEY_IMAGES);
@@ -385,6 +403,7 @@ function saveSettings() {
     twentyFourClock: document.getElementById('twentyFourClock').checked,
     ampmMode: document.getElementById('ampmMode').checked,
     showDayNightIcons: document.getElementById('showDayNightIcons').checked,
+    textFormat: document.getElementById('textFormat').checked,
     gridCols: parseInt(document.getElementById('gridCols').value) || 3,
     gridRows: parseInt(document.getElementById('gridRows').value) || 4,
   };
@@ -594,6 +613,7 @@ function parseSettingsFromUrl() {
   settings.twentyFourClock = (params.has('twentyFourClock') && isValidBool(params.get('twentyFourClock'))) ? params.get('twentyFourClock') === 'true' : defaults.twentyFourClock;
   settings.ampmMode = (params.has('ampmMode') && isValidBool(params.get('ampmMode'))) ? params.get('ampmMode') === 'true' : defaults.ampmMode;
   settings.showDayNightIcons = (params.has('showDayNightIcons') && isValidBool(params.get('showDayNightIcons'))) ? params.get('showDayNightIcons') === 'true' : defaults.showDayNightIcons;
+  settings.textFormat = (params.has('textFormat') && isValidBool(params.get('textFormat'))) ? params.get('textFormat') === 'true' : defaults.textFormat;
   settings.gridCols = (params.has('gridCols') && isValidInt(params.get('gridCols'), 1, 5)) ? parseInt(params.get('gridCols')) : defaults.gridCols;
   settings.gridRows = (params.has('gridRows') && isValidInt(params.get('gridRows'), 1, 5)) ? parseInt(params.get('gridRows')) : defaults.gridRows;
   return settings;
@@ -609,6 +629,7 @@ function updateUrlWithSettings(settings) {
   params.set('twentyFourClock', settings.twentyFourClock);
   params.set('ampmMode', settings.ampmMode);
   params.set('showDayNightIcons', settings.showDayNightIcons);
+  params.set('textFormat', settings.textFormat);
   params.set('gridCols', settings.gridCols);
   params.set('gridRows', settings.gridRows);
   const newUrl = window.location.pathname + '?' + params.toString();
@@ -634,4 +655,39 @@ const BAD_MONKEY_IMAGES = [
 ];
 function getRandomFrom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Generate Russian textual description of time (e.g., "двадцать минут седьмого", "без четверти восемь", "половина третьего")
+function generateTimeDescription(time) {
+  const [hRaw, mRaw] = time.split(':').map(Number);
+  const h12 = hRaw % 12;
+  const hourNext = (h12 + 1) % 12;
+  const hourNames = ['двенадцать','час','два','три','четыре','пять','шесть','семь','восемь','девять','десять','одиннадцать'];
+  const hourGen = ['двенадцатого','первого','второго','третьего','четвёртого','пятого','шестого','седьмого','восьмого','девятого','десятого','одиннадцатого'];
+  const minuteWords = [
+    'ноль','одна','две','три','четыре','пять','шесть','семь','восемь','девять','десять',
+    'одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать','шестнадцать','семнадцать','восемнадцать','девятнадцать','двадцать',
+    'двадцать одна','двадцать две','двадцать три','двадцать четыре','двадцать пять','двадцать шесть','двадцать семь','двадцать восемь','двадцать девять'
+  ];
+  const minuteWordsGen = [
+    'ноля','одной','двух','трёх','четырёх','пяти','шести','семи','восьми','девяти',
+    'десяти','одиннадцати','двенадцати','тринадцати','четырнадцати','пятнадцати','шестнадцати','семнадцати','восемнадцати','девятнадцати','двадцати',
+    'двадцати одной','двадцати двух','двадцати трёх','двадцати четырёх','двадцати пяти','двадцати шести','двадцати семи','двадцати восьми','двадцати девяти'
+  ];
+  const m = mRaw;
+  // special cases
+  if (m === 0) return `${hourNames[h12]} ровно`;
+  if (m === 30) return `половина ${hourGen[hourNext]}`;
+  if (m === 15) return `четверть ${hourGen[hourNext]}`;
+  if (m === 45) return `без четверти ${hourNames[hourNext]}`;
+  // less than half
+  if (m < 30) {
+    const w = minuteWords[m];
+    const unit = (m % 10 === 1 && m !== 11) ? 'минута' : (([2,3,4].includes(m % 10) && ![12,13,14].includes(m)) ? 'минуты' : 'минут');
+    return `${w} ${unit} ${hourGen[hourNext]}`;
+  }
+  // more than half (without 'минут')
+  const rem = 60 - m;
+  const wGen = minuteWordsGen[rem];
+  return `без ${wGen} ${hourNames[hourNext]}`;
 }
